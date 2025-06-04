@@ -43,14 +43,7 @@ export default function HomePage() {
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
               Incentivizing pro-bono legal work with AI-powered matching and transparent bounties.
             </p>
-            <div className="space-x-4">
-              <Button size="lg" asChild className="bg-primary hover:bg-primary/90 text-primary-foreground">
-                <Link href="/ngo">NGO Portal</Link>
-              </Button>
-              <Button size="lg" variant="secondary" asChild className="bg-secondary hover:bg-secondary/90 text-secondary-foreground">
-                <Link href="/lawyer">Lawyer Portal</Link>
-              </Button>
-            </div>
+            {/* Portal buttons removed from here */}
           </div>
         </section>
 
