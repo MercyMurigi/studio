@@ -29,34 +29,43 @@ export const mockLawyerProfiles: LawyerProfile[] = [
     id: 'lawyer-1',
     name: 'Aisha Khan',
     email: 'aisha.khan@email.com',
-    specialization: ['Human Rights Law', 'Refugee Law'],
+    specialization: ['Human Rights Law', 'Refugee Law', 'International Criminal Law'],
     experienceYears: 7,
-    bio: 'Passionate human rights lawyer with extensive experience in international courts.',
-    profilePictureUrl: 'https://placehold.co/100x100.png?text=AK',
+    bio: 'Passionate human rights lawyer with extensive experience in international courts and refugee advocacy. Committed to leveraging legal expertise for impactful pro-bono work.',
+    profilePictureUrl: 'https://placehold.co/150x150.png?text=AK',
     availability: 'Part-time',
     walletBalanceHaki: 15000,
+    barAssociationId: 'LSK/A/1234',
+    linkedInProfile: 'https://linkedin.com/in/aishakhan',
+    preferredCaseTypes: ['Asylum Claims', 'War Crimes Prosecution', 'Civil Liberties Defense'],
   },
   {
     id: 'lawyer-2',
     name: 'Ben Carter',
     email: 'ben.carter@email.com',
-    specialization: ['Environmental Law', 'Corporate Accountability'],
+    specialization: ['Environmental Law', 'Corporate Accountability', 'Climate Justice'],
     experienceYears: 5,
-    bio: 'Environmental lawyer focused on holding corporations accountable for ecological damage.',
-    profilePictureUrl: 'https://placehold.co/100x100.png?text=BC',
+    bio: 'Environmental lawyer focused on holding corporations accountable for ecological damage and advocating for climate justice policies. Skilled in litigation and policy analysis.',
+    profilePictureUrl: 'https://placehold.co/150x150.png?text=BC',
     availability: 'Flexible',
     walletBalanceHaki: 500,
+    barAssociationId: 'BAR/BC/5678',
+    linkedInProfile: 'https://linkedin.com/in/bencarter',
+    preferredCaseTypes: ['Pollution Litigation', 'Renewable Energy Policy', 'Conservation Law'],
   },
   {
     id: 'lawyer-3',
     name: 'Maria Rodriguez',
     email: 'maria.rodriguez@email.com',
-    specialization: ['Family Law', 'Child Protection'],
+    specialization: ['Family Law', 'Child Protection', 'Domestic Violence'],
     experienceYears: 10,
-    bio: 'Experienced family lawyer dedicated to protecting the rights of children and vulnerable families.',
-    profilePictureUrl: 'https://placehold.co/100x100.png?text=MR',
+    bio: 'Experienced family lawyer dedicated to protecting the rights of children and vulnerable families. Expertise in custody disputes, adoption, and domestic violence cases.',
+    profilePictureUrl: 'https://placehold.co/150x150.png?text=MR',
     availability: 'Full-time',
     walletBalanceHaki: 22000,
+    barAssociationId: 'LAW/MR/9012',
+    linkedInProfile: 'https://linkedin.com/in/mariarodriguez',
+    preferredCaseTypes: ['Child Custody', 'Adoption Services', 'Protection Orders'],
   },
 ];
 
@@ -249,7 +258,7 @@ export const getAnalyticsData = (ngoId?: string): AnalyticsData => {
     if (monthIndexMap[createdAtMonth] !== undefined) {
         for (let i = monthIndexMap[createdAtMonth]; i < allMonths.length; i++) {
             const currentMonthStr = allMonths[i];
-            if (b.status === 'Open' || (b.status === 'In Progress' && (!completedAtMonth || i < monthIndexMap[completedAtMonth]))) {
+            if (b.status === 'Open' || (b.status === 'In Progress' && (!completedAtMonth || i < monthIndexMap[completedAtMonth])) || b.status === 'Awaiting Review' ) {
                  if (monthlyData[currentMonthStr]) monthlyData[currentMonthStr].open++;
             }
         }
@@ -356,3 +365,4 @@ export const mockWalletTransactions: WalletTransaction[] = [
     currency: 'HAKI',
   },
 ];
+

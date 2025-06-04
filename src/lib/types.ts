@@ -144,3 +144,4 @@ export interface WalletTransaction {
   currency?: 'HAKI' | 'USD'; // For swaps or deposits/withdrawals
   transactionHash?: string; // For blockchain transactions later
 }
+
