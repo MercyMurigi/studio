@@ -129,10 +129,36 @@ export const mockBounties: Bounty[] = [
     tags: ['Child Custody', 'Refugee Rights', 'International Family Law'],
     location: 'Capital City',
     requiredExperience: 'Specialization in family law, experience with refugee cases preferred',
-    totalRaised: 6500,
+    totalRaised: 6500, // Example: bounty amount + 500 from donor
     donorContributions: [
       { donorId: 'donor-1', donorName: 'Anonymous Donor', amount: 500, currency: 'HAKI', timestamp: '2024-06-10T12:00:00Z' }
     ]
+  },
+  {
+    id: 'bounty-4',
+    title: 'Legal Aid for Unfair Dismissal',
+    description: 'Provide legal counsel and representation for an individual claiming unfair dismissal from their employer. Involves negotiation and potential tribunal hearing.',
+    ngoId: 'ngo-1',
+    ngoName: 'Justice First Initiative',
+    amount: 4000,
+    currency: 'HAKI',
+    status: 'Completed', // Example of a completed bounty
+    lawyerId: 'lawyer-1',
+    lawyerName: 'Aisha Khan',
+    category: 'Employment Law',
+    createdAt: '2024-03-01T09:00:00Z',
+    updatedAt: '2024-05-15T11:00:00Z',
+    deadline: '2024-05-30T09:00:00Z',
+    milestones: [
+      { id: 'm4-1', name: 'Case Review and Advice', description: 'Review documents, advise client on merits.', status: 'Approved', unlocksTokens: 800, approvedAt: "2024-03-10T10:00:00Z" },
+      { id: 'm4-2', name: 'Negotiation with Employer', description: 'Attempt to negotiate a settlement.', status: 'Approved', unlocksTokens: 1200, approvedAt: "2024-04-05T10:00:00Z" },
+      { id: 'm4-3', name: 'Prepare Tribunal Documents', description: 'Draft and file documents for employment tribunal.', status: 'Approved', unlocksTokens: 1000, approvedAt: "2024-04-25T10:00:00Z"},
+      { id: 'm4-4', name: 'Tribunal Hearing & Resolution', description: 'Represent client at hearing or finalize settlement.', status: 'Approved', unlocksTokens: 1000, approvedAt: "2024-05-15T10:00:00Z"}
+    ],
+    tags: ['Employment Law', 'Unfair Dismissal', 'Worker Rights'],
+    location: 'Remote',
+    requiredExperience: 'Experience in employment law and tribunal advocacy',
+    totalRaised: 4000,
   }
 ];
 
@@ -149,28 +175,48 @@ export const mockDonorProfiles: DonorProfile[] = [
   },
 ];
 
-export const mockAnalyticsData: AnalyticsData = {
-  totalBounties: mockBounties.length, // Dynamically calculate based on current bounties
-  openBounties: mockBounties.filter(b => b.status === 'Open').length,
-  completedBounties: mockBounties.filter(b => b.status === 'Completed').length,
-  totalFundsDistributed: mockBounties.filter(b => b.status === 'Completed').reduce((sum, b) => sum + b.amount, 0), // in HAKI
-  averageCompletionTime: "45 days", // This would need more complex calculation
-  successRate: mockBounties.length > 0 ? (mockBounties.filter(b => b.status === 'Completed').length / mockBounties.length) * 100 : 0, // percentage
-  categoryDistribution: [
-    { name: "Human Rights", value: mockBounties.filter(b => b.category === "Human Rights Law").length },
-    { name: "Environmental", value: mockBounties.filter(b => b.category === "Environmental Law").length },
-    { name: "Family Law", value: mockBounties.filter(b => b.category === "Family Law").length },
-    { name: "Other", value: mockBounties.filter(b => !["Human Rights Law", "Environmental Law", "Family Law"].includes(b.category)).length },
-  ],
-  bountyStatusOverTime: [ // This mock data would need to be generated dynamically in a real app
-    { date: "Jan", open: 5, completed: 2 },
-    { date: "Feb", open: 7, completed: 3 },
-    { date: "Mar", open: 8, completed: 5 },
-    { date: "Apr", open: 10, completed: 7 },
-    { date: "May", open: 12, completed: 9 },
-    { date: "Jun", open: mockBounties.filter(b => b.status === 'Open').length, completed: mockBounties.filter(b => b.status === 'Completed').length },
-  ],
+// Function to get dynamic analytics data based on current mockBounties
+const getAnalyticsData = (): AnalyticsData => {
+  const totalBounties = mockBounties.length;
+  const openBounties = mockBounties.filter(b => b.status === 'Open').length;
+  const completedBounties = mockBounties.filter(b => b.status === 'Completed').length;
+  const totalFundsDistributed = mockBounties
+    .filter(b => b.status === 'Completed')
+    .reduce((sum, b) => sum + b.amount, 0);
+  const successRate = totalBounties > 0 ? (completedBounties / totalBounties) * 100 : 0;
+
+  const categories = [...new Set(mockBounties.map(b => b.category))];
+  const categoryDistribution = categories.map(cat => ({
+    name: cat,
+    value: mockBounties.filter(b => b.category === cat).length,
+  }));
+
+  // Simplified mock data for bounty status over time
+  // In a real app, this would come from historical data
+  const bountyStatusOverTime = [
+    { date: "Jan '24", open: 5, completed: 2 },
+    { date: "Feb '24", open: 7, completed: 3 },
+    { date: "Mar '24", open: 8, completed: 5 },
+    { date: "Apr '24", open: 10, completed: 7 },
+    { date: "May '24", open: 12, completed: 9 },
+    { date: "Jun '24", open: openBounties + completedBounties >= 15 ? openBounties : 11, completed: completedBounties >= 10 ? completedBounties : 10}, // Make it a bit more dynamic
+  ];
+
+
+  return {
+    totalBounties,
+    openBounties,
+    completedBounties,
+    totalFundsDistributed,
+    averageCompletionTime: "45 days", // Static for now
+    successRate,
+    categoryDistribution,
+    bountyStatusOverTime,
+  };
 };
+
+export const mockAnalyticsData = getAnalyticsData();
+
 
 export const mockSuggestedCases: AISuggestedCase[] = [
     {
@@ -192,5 +238,3 @@ export const mockSuggestedCases: AISuggestedCase[] = [
         currency: 'HAKI',
     }
 ];
-
-    

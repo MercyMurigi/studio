@@ -1,20 +1,30 @@
+
 "use client"
 
 import { PageTitle } from "@/components/shared/PageTitle";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { BarChart, LineChart, PieChart } from "lucide-react"; // Using icons as placeholders for charts
-import { ResponsiveContainer, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Line, Pie } from 'recharts';
-import { ChartConfig, ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
+import { TrendingUp, PieChartIcon, BarChartIcon as LucideBarChartIcon, DollarSignIcon } from "lucide-react"; // Using icons for cards
+import { ResponsiveContainer, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Line, Pie, Cell } from 'recharts';
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from "@/components/ui/chart";
 import { mockAnalyticsData } from "@/lib/data";
 
+const categoryChartData = mockAnalyticsData.categoryDistribution;
 const categoryChartConfig = {
-  value: { label: "Bounties" },
-  ...mockAnalyticsData.categoryDistribution.reduce((acc, cur) => {
-    acc[cur.name.toLowerCase().replace(/\s+/g, '')] = {label: cur.name, color: `hsl(var(--chart-${Object.keys(acc).length + 1}))`};
+  value: {
+    label: "Bounties",
+  },
+  ...categoryChartData.reduce((acc, entry, index) => {
+    const key = entry.name.toLowerCase().replace(/\s+/g, "");
+    acc[key] = {
+      label: entry.name,
+      color: `hsl(var(--chart-${index + 1}))`,
+    };
     return acc;
-  }, {} as Record<string, {label:string, color:string}>)
+  }, {} as Record<string, { label: string; color: string }>),
 } satisfies ChartConfig;
 
+
+const statusChartData = mockAnalyticsData.bountyStatusOverTime;
 const statusChartConfig = {
   open: { label: "Open Bounties", color: "hsl(var(--chart-1))" },
   completed: { label: "Completed Bounties", color: "hsl(var(--chart-2))" },
@@ -33,7 +43,7 @@ export default function NgoAnalyticsPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Bounties</CardTitle>
-            <BarChart className="h-4 w-4 text-muted-foreground" />
+            <LucideBarChartIcon className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{mockAnalyticsData.totalBounties}</div>
@@ -42,7 +52,7 @@ export default function NgoAnalyticsPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Open Bounties</CardTitle>
-            <LineChart className="h-4 w-4 text-muted-foreground" />
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{mockAnalyticsData.openBounties}</div>
@@ -51,16 +61,16 @@ export default function NgoAnalyticsPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Success Rate</CardTitle>
-            <PieChart className="h-4 w-4 text-muted-foreground" />
+            <PieChartIcon className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{mockAnalyticsData.successRate}%</div>
+            <div className="text-2xl font-bold">{mockAnalyticsData.successRate.toFixed(1)}%</div>
           </CardContent>
         </Card>
          <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Funds Distributed</CardTitle>
-            <PieChart className="h-4 w-4 text-muted-foreground" />
+            <DollarSignIcon className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{mockAnalyticsData.totalFundsDistributed.toLocaleString()} HAKI</div>
@@ -74,26 +84,30 @@ export default function NgoAnalyticsPage() {
             <CardTitle>Bounty Categories</CardTitle>
             <CardDescription>Distribution of bounties by legal category.</CardDescription>
           </CardHeader>
-          <CardContent>
-            <ChartContainer config={categoryChartConfig} className="mx-auto aspect-square max-h-[300px]">
+          <CardContent className="aspect-[4/3] lg:aspect-[16/9]">
+            <ChartContainer config={categoryChartConfig} className="mx-auto aspect-square max-h-[350px]">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
-                  <ChartTooltipContent nameKey="value" hideLabel />
+                  <ChartTooltip 
+                    cursor={false}
+                    content={<ChartTooltipContent hideLabel nameKey="name" />} 
+                  />
                   <Pie
-                    data={mockAnalyticsData.categoryDistribution}
+                    data={categoryChartData}
                     dataKey="value"
                     nameKey="name"
                     cx="50%"
                     cy="50%"
-                    outerRadius={100}
+                    outerRadius={120}
+                    innerRadius={50}
                     labelLine={false}
-                    label={({ percent, name }) => `${name} (${(percent * 100).toFixed(0)}%)`}
+                    label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
                   >
-                    {mockAnalyticsData.categoryDistribution.map((entry, index) => (
-                       <YAxis key={`cell-${index}`} fill={`hsl(var(--chart-${index + 1}))`} />
+                    {categoryChartData.map((entry) => (
+                      <Cell key={entry.name} fill={`var(--color-${entry.name.toLowerCase().replace(/\s+/g, "")})`} />
                     ))}
                   </Pie>
-                   <Legend />
+                   <ChartLegend content={<ChartLegendContent nameKey="name" />} />
                 </PieChart>
               </ResponsiveContainer>
             </ChartContainer>
@@ -105,17 +119,42 @@ export default function NgoAnalyticsPage() {
             <CardTitle>Bounty Status Over Time</CardTitle>
             <CardDescription>Trends in open vs. completed bounties.</CardDescription>
           </CardHeader>
-          <CardContent>
-             <ChartContainer config={statusChartConfig} className="aspect-auto h-[300px] w-full">
+          <CardContent className="aspect-[4/3] lg:aspect-[16/9]">
+             <ChartContainer config={statusChartConfig} className="h-full w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={mockAnalyticsData.bountyStatusOverTime} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+                    <LineChart data={statusChartData} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
                         <CartesianGrid strokeDasharray="3 3" vertical={false}/>
-                        <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={8} />
-                        <YAxis tickLine={false} axisLine={false} tickMargin={8} />
-                        <ChartTooltipContent />
-                        <Legend />
-                        <Line type="monotone" dataKey="open" stroke="var(--color-open)" strokeWidth={2} dot={false} />
-                        <Line type="monotone" dataKey="completed" stroke="var(--color-completed)" strokeWidth={2} dot={false} />
+                        <XAxis 
+                            dataKey="date" 
+                            tickLine={false} 
+                            axisLine={false} 
+                            tickMargin={8} 
+                            padding={{ left: 10, right: 10 }}
+                        />
+                        <YAxis 
+                            tickLine={false} 
+                            axisLine={false} 
+                            tickMargin={8}
+                            allowDecimals={false}
+                        />
+                        <ChartTooltip content={<ChartTooltipContent indicator="line" />} />
+                        <ChartLegend content={<ChartLegendContent />} />
+                        <Line 
+                            type="monotone" 
+                            dataKey="open" 
+                            stroke="var(--color-open)" 
+                            strokeWidth={2} 
+                            dot={{r: 4, fill: "var(--color-open)", strokeWidth:0}} 
+                            activeDot={{r: 6, strokeWidth: 0, style: { boxShadow: "0 0 5px 2px var(--color-open)"}}}
+                        />
+                        <Line 
+                            type="monotone" 
+                            dataKey="completed" 
+                            stroke="var(--color-completed)" 
+                            strokeWidth={2} 
+                            dot={{r: 4, fill: "var(--color-completed)", strokeWidth:0}}
+                            activeDot={{r: 6, strokeWidth: 0, style: { boxShadow: "0 0 5px 2px var(--color-completed)"}}}
+                        />
                     </LineChart>
                 </ResponsiveContainer>
             </ChartContainer>
