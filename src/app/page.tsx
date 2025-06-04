@@ -6,7 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { Scale, ShieldCheck, ClipboardCheck, Network } from "lucide-react";
+import { Scale, ShieldCheck, ClipboardCheck, Network, FileText, Briefcase, HeartHandshake } from "lucide-react";
 import { JusticeAnimationBackground } from "@/components/shared/JusticeAnimationBackground";
 
 export default function HomePage() {
@@ -25,6 +25,24 @@ export default function HomePage() {
       icon: <Network className="h-10 w-10 text-secondary" />,
       title: "Unified Pro-Bono Ecosystem",
       description: "Connecting NGOs, lawyers, and donors to streamline access to justice for all.",
+    },
+  ];
+
+  const howItWorksSteps = [
+    {
+      icon: <FileText className="h-10 w-10 text-secondary" />,
+      title: "NGOs Create Bounties",
+      description: "NGOs define pro-bono cases, set milestones, and offer HAKI token rewards on our secure platform.",
+    },
+    {
+      icon: <Briefcase className="h-10 w-10 text-secondary" />,
+      title: "Lawyers Claim Cases",
+      description: "Qualified lawyers browse available bounties, apply for cases matching their expertise, and work towards justice.",
+    },
+    {
+      icon: <HeartHandshake className="h-10 w-10 text-secondary" />,
+      title: "Progress & Rewards",
+      description: "Donors can fund impactful cases. Lawyers earn HAKI tokens as milestones are verifiably completed, ensuring transparency.",
     },
   ];
 
@@ -80,7 +98,7 @@ export default function HomePage() {
                   width={600}
                   height={400}
                   className="rounded-lg shadow-xl"
-                  data-ai-hint="justice collaboration"
+                  data-ai-hint="legal professionals collaborating"
                 />
               </div>
             </div>
@@ -88,7 +106,7 @@ export default function HomePage() {
         </section>
 
         {/* Features Section */}
-        <section className="py-16 md:py-24 bg-background">
+        <section className="py-16 md:py-24 bg-muted/30">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl md:text-4xl font-bold font-headline text-center mb-12">Key Features</h2>
             <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-8">
@@ -106,6 +124,27 @@ export default function HomePage() {
             </div>
           </div>
         </section>
+
+        {/* How It Works Section */}
+        <section className="py-16 md:py-24 bg-background">
+          <div className="container mx-auto px-4">
+            <h2 className="text-3xl md:text-4xl font-bold font-headline text-center mb-12">Simple Steps to Justice</h2>
+            <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-8">
+              {howItWorksSteps.map((step) => (
+                <Card key={step.title} className="bg-card hover:shadow-xl transition-shadow duration-300 flex flex-col">
+                  <CardHeader className="items-center text-center">
+                    {step.icon}
+                    <CardTitle className="mt-4 font-headline">{step.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="text-center flex-grow">
+                    <CardDescription>{step.description}</CardDescription>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
       </main>
       <Footer />
     </div>
