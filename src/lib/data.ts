@@ -99,7 +99,7 @@ export let mockBounties: Bounty[] = [
     lawyerName: 'Ben Carter',
     category: 'Environmental Law',
     createdAt: '2024-07-20T14:30:00Z',
-    updatedAt: '2024-07-22T14:30:00Z', // Make sure updated is recent for in-progress
+    updatedAt: '2024-07-22T14:30:00Z', 
     deadline: '2024-10-31T14:30:00Z',
     milestones: [
       { id: 'm2-1', name: 'Gather Evidence & Witness Statements', description: 'Collect photographic evidence, expert reports, and witness testimonies.', status: 'Approved', unlocksTokens: 1000, dueDate: '2024-08-10T14:30:00Z', proof: "Evidence_Bundle_1.zip", approvedAt: "2024-08-12T10:00:00Z" },
@@ -170,6 +170,31 @@ export let mockBounties: Bounty[] = [
     location: 'Remote',
     requiredExperience: 'Experience in employment law and tribunal advocacy',
     totalRaised: 4000,
+  },
+  {
+    id: 'bounty-5-awaiting-review',
+    title: 'Represent Tenant in Eviction Case',
+    description: 'A low-income tenant is facing an unjust eviction. Need a lawyer to review the case, negotiate with the landlord, and represent in court if necessary.',
+    ngoId: 'ngo-2',
+    ngoName: 'EcoLegal Defenders',
+    amount: 3000,
+    currency: 'HAKI',
+    status: 'Awaiting Review',
+    lawyerId: 'lawyer-1', // Aisha Khan applied
+    lawyerName: 'Aisha Khan',
+    category: 'Housing Law',
+    createdAt: '2024-07-25T10:00:00Z',
+    updatedAt: '2024-07-26T11:00:00Z', // Updated when Aisha applied
+    deadline: '2024-09-15T10:00:00Z',
+    milestones: [
+      { id: 'm5-1', name: 'Initial Consultation & Document Review', description: 'Meet with tenant, review lease and eviction notice.', status: 'Pending', unlocksTokens: 500 },
+      { id: 'm5-2', name: 'Negotiation with Landlord/Agent', description: 'Attempt to reach a settlement or agreement.', status: 'Pending', unlocksTokens: 1000 },
+      { id: 'm5-3', name: 'Court Representation (if needed)', description: 'Represent tenant in eviction hearing.', status: 'Pending', unlocksTokens: 1500 }
+    ],
+    tags: ['Eviction', 'Tenant Rights', 'Housing Security'],
+    location: 'Urban Area',
+    requiredExperience: '2+ years in housing or tenant law',
+    caseFiles: [{ name: "Eviction_Notice.pdf", url: "/placeholder-doc.pdf", uploadedAt: "2024-07-25T10:05:00Z" }]
   }
 ];
 
@@ -188,7 +213,6 @@ export const mockDonorProfiles: DonorProfile[] = [
   },
 ];
 
-// Function to get dynamic analytics data based on current mockBounties
 export const getAnalyticsData = (ngoId?: string): AnalyticsData => {
   const relevantBounties = ngoId
     ? mockBounties.filter(b => b.ngoId === ngoId)
@@ -204,22 +228,19 @@ export const getAnalyticsData = (ngoId?: string): AnalyticsData => {
   const successfulBounties = relevantBounties.filter(b => b.status === 'Completed');
   const successRate = totalBounties > 0 ? (successfulBounties.length / totalBounties) * 100 : 0;
 
-
   const categories = [...new Set(relevantBounties.map(b => b.category))]; 
   const categoryDistribution = categories.map(cat => ({
     name: cat,
     value: relevantBounties.filter(b => b.category === cat).length,
   })).filter(cd => cd.value > 0);
 
-  // Simplified mock data for bounty status over time for the specific NGO
   const monthlyData: { [key: string]: { open: number, completed: number } } = {};
-  const allMonths = ["Jan '24", "Feb '24", "Mar '24", "Apr '24", "May '24", "Jun '24"]; // Define a fixed set of months for x-axis
-
+  const allMonths = ["Jan '24", "Feb '24", "Mar '24", "Apr '24", "May '24", "Jun '24", "Jul '24"]; 
   allMonths.forEach(monthStr => {
     monthlyData[monthStr] = { open: 0, completed: 0 };
   });
   
-  const monthIndexMap: Record<string, number> = { "Jan '24":0, "Feb '24":1, "Mar '24":2, "Apr '24":3, "May '24":4, "Jun '24":5};
+  const monthIndexMap: Record<string, number> = { "Jan '24":0, "Feb '24":1, "Mar '24":2, "Apr '24":3, "May '24":4, "Jun '24":5, "Jul '24":6};
 
   relevantBounties.forEach(b => {
     const createdAtMonth = new Date(b.createdAt).toLocaleString('default', { month: 'short' }) + " '" + new Date(b.createdAt).getFullYear().toString().slice(-2);
@@ -247,19 +268,17 @@ export const getAnalyticsData = (ngoId?: string): AnalyticsData => {
     completed: monthlyData[monthStr]?.completed || 0,
   }));
 
-
   return {
     totalBounties,
     openBounties: openBountiesCount,
     completedBounties: completedBountiesCount,
     totalFundsDistributed,
-    averageCompletionTime: "45 days", // Static for now
+    averageCompletionTime: "45 days", 
     successRate,
     categoryDistribution,
     bountyStatusOverTime,
   };
 };
-
 
 export const mockSuggestedCases: AISuggestedCase[] = [
     {
@@ -304,7 +323,7 @@ export const mockWalletTransactions: WalletTransaction[] = [
     amountHaki: 20000,
     status: 'Completed',
     from: 'Bank Account XXXX-1234',
-    currency: 'USD', // Original currency of deposit
+    currency: 'USD', 
   },
   {
     id: 'txn-3',
@@ -328,7 +347,7 @@ export const mockWalletTransactions: WalletTransaction[] = [
   },
   {
     id: 'txn-5',
-    date: new Date().toISOString(), // Today
+    date: new Date().toISOString(), 
     type: 'Withdrawal',
     description: 'Withdrawal to Bank Account YYYY-5678',
     amountHaki: -1000,

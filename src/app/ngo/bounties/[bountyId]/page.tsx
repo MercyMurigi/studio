@@ -11,9 +11,9 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
-import { mockBounties } from "@/lib/data";
+import { mockBounties, mockLawyerProfiles } from "@/lib/data";
 import type { Bounty, Milestone } from "@/lib/types";
-import { ArrowLeft, CheckCircle, XCircle, FileText, Users, CalendarDays, Tag, ThumbsUp, ThumbsDown, AlertTriangle, Loader2 } from "lucide-react";
+import { ArrowLeft, CheckCircle, XCircle, FileText, Users, CalendarDays, Tag, ThumbsUp, ThumbsDown, AlertTriangle, Loader2, UserCheck, UserX } from "lucide-react";
 
 // Helper for milestone status badge
 const getMilestoneStatusBadge = (status: Milestone['status']) => {
@@ -34,7 +34,8 @@ export default function NgoBountyDetailsPage() {
 
   const [bounty, setBounty] = useState<Bounty | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [actionLoading, setActionLoading] = useState<Record<string, boolean>>({}); // { milestoneId: true/false }
+  const [milestoneActionLoading, setMilestoneActionLoading] = useState<Record<string, boolean>>({}); // { milestoneId: true/false }
+  const [applicationActionLoading, setApplicationActionLoading] = useState<string | null>(null); // 'approve' | 'reject' | null
 
   useEffect(() => {
     const foundBounty = mockBounties.find(b => b.id === bountyId);
@@ -42,16 +43,15 @@ export default function NgoBountyDetailsPage() {
       setBounty(foundBounty);
     } else {
       toast({ title: "Error", description: "Bounty not found.", variant: "destructive" });
-      router.push('/ngo/bounties'); // Redirect if bounty not found
+      router.push('/ngo/bounties'); 
     }
     setIsLoading(false);
   }, [bountyId, router, toast]);
 
   const handleMilestoneAction = (milestoneId: string, action: 'approve' | 'reject') => {
     if (!bounty) return;
-    setActionLoading(prev => ({ ...prev, [milestoneId]: true }));
+    setMilestoneActionLoading(prev => ({ ...prev, [milestoneId]: true }));
 
-    // Simulate API call
     setTimeout(() => {
       const updatedBounties = mockBounties.map(b => {
         if (b.id === bounty.id) {
@@ -63,7 +63,6 @@ export default function NgoBountyDetailsPage() {
                   ...m,
                   status: action === 'approve' ? 'Approved' : 'Rejected' as Milestone['status'],
                   approvedAt: action === 'approve' ? new Date().toISOString() : undefined,
-                  // TODO: Add rejection reason input if needed
                 };
               }
               return m;
@@ -73,19 +72,51 @@ export default function NgoBountyDetailsPage() {
         return b;
       });
 
-      // This is a direct mutation for mock data. In a real app, you'd update state via API response.
       const bountyIndex = mockBounties.findIndex(b => b.id === bounty.id);
       if (bountyIndex !== -1) {
         mockBounties[bountyIndex] = updatedBounties.find(b => b.id === bounty.id)!;
-        setBounty(mockBounties[bountyIndex]); // Update local state to re-render
+        setBounty(mockBounties[bountyIndex]); 
       }
       
-      setActionLoading(prev => ({ ...prev, [milestoneId]: false }));
+      setMilestoneActionLoading(prev => ({ ...prev, [milestoneId]: false }));
       toast({
         title: `Milestone ${action === 'approve' ? 'Approved' : 'Rejected'}`,
         description: `Milestone "${bounty.milestones.find(m => m.id === milestoneId)?.name}" has been ${action === 'approve' ? 'approved' : 'rejected'}.`,
         variant: "default",
       });
+    }, 1000);
+  };
+
+  const handleApplicationAction = (action: 'approve' | 'reject') => {
+    if (!bounty || bounty.status !== 'Awaiting Review') return;
+    setApplicationActionLoading(action);
+
+    setTimeout(() => {
+      const bountyIndex = mockBounties.findIndex(b => b.id === bounty.id);
+      if (bountyIndex !== -1) {
+        if (action === 'approve') {
+          mockBounties[bountyIndex].status = 'In Progress';
+          mockBounties[bountyIndex].updatedAt = new Date().toISOString();
+          setBounty(mockBounties[bountyIndex]);
+          toast({
+            title: "Application Approved",
+            description: `Application from ${bounty.lawyerName} for "${bounty.title}" approved. Case is now In Progress.`,
+            variant: "default",
+          });
+        } else { // Reject
+          mockBounties[bountyIndex].status = 'Open';
+          mockBounties[bountyIndex].lawyerId = undefined;
+          mockBounties[bountyIndex].lawyerName = undefined;
+          mockBounties[bountyIndex].updatedAt = new Date().toISOString();
+          setBounty(mockBounties[bountyIndex]);
+           toast({
+            title: "Application Rejected",
+            description: `Application from ${bounty.lawyerName} for "${bounty.title}" rejected. Bounty is open again.`,
+            variant: "default",
+          });
+        }
+      }
+      setApplicationActionLoading(null);
     }, 1000);
   };
   
@@ -94,7 +125,6 @@ export default function NgoBountyDetailsPage() {
     const approvedMilestones = currentBounty.milestones.filter(m => m.status === 'Approved').length;
     return (approvedMilestones / currentBounty.milestones.length) * 100;
   };
-
 
   if (isLoading) {
     return (
@@ -135,6 +165,9 @@ export default function NgoBountyDetailsPage() {
               <CardDescription>{bounty.description}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+               <div className="flex items-center">
+                <Badge className={bounty.status === 'Open' ? 'bg-primary' : bounty.status === 'In Progress' ? 'bg-amber-500' : bounty.status === 'Awaiting Review' ? 'bg-blue-500' : bounty.status === 'Completed' ? 'bg-green-600' : 'bg-slate-500' + ' text-white'}>{bounty.status}</Badge>
+              </div>
               <div className="flex items-center">
                 <Tag className="h-5 w-5 mr-2 text-primary" />
                 <strong>Category:</strong><span className="ml-2">{bounty.category}</span>
@@ -153,99 +186,135 @@ export default function NgoBountyDetailsPage() {
               )}
                {bounty.requiredExperience && (
                 <div className="flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 text-primary"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 text-primary"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg> {/* Briefcase icon */}
                   <strong>Required Experience:</strong><span className="ml-2">{bounty.requiredExperience}</span>
                 </div>
               )}
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Milestones & Progress</CardTitle>
-              <div className="mt-2">
-                <Progress value={overallProgress} className="w-full h-3" />
-                <p className="text-sm text-muted-foreground mt-1">{overallProgress.toFixed(0)}% Complete ({bounty.milestones.filter(m => m.status === 'Approved').length} of {bounty.milestones.length} milestones approved)</p>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <Accordion type="single" collapsible className="w-full">
-                {bounty.milestones.map((milestone, index) => (
-                  <AccordionItem value={`milestone-${index}`} key={milestone.id}>
-                    <AccordionTrigger className="hover:no-underline text-left">
-                      <div className="flex justify-between items-center w-full">
-                        <span className="font-semibold">{index + 1}. {milestone.name}</span>
-                        {getMilestoneStatusBadge(milestone.status)}
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent className="pt-2 pb-4 px-1 space-y-3">
-                      <p className="text-sm text-muted-foreground">{milestone.description}</p>
-                      <p className="text-sm"><strong>Tokens on Approval:</strong> {milestone.unlocksTokens} HAKI</p>
-                      {milestone.dueDate && <p className="text-sm"><strong>Due Date:</strong> {new Date(milestone.dueDate).toLocaleDateString()}</p>}
-                      
-                      {milestone.proof && (typeof milestone.proof === 'string' || milestone.proof instanceof File) && (
-                        <div className="mt-2 p-3 border rounded-md bg-accent/50">
-                          <p className="text-sm font-medium flex items-center">
-                            <FileText className="h-4 w-4 mr-2 text-primary" />
-                            Proof Submitted:
-                          </p>
-                          <p className="text-sm text-muted-foreground ml-6">
-                            {typeof milestone.proof === 'string' ? milestone.proof : milestone.proof.name}
-                            {/* In a real app, this would be a download link: <Button variant="link" size="sm" asChild><Link href={`/api/download/${milestone.proof}`}>Download</Link></Button> */}
-                          </p>
-                        </div>
-                      )}
+          {bounty.status === 'Awaiting Review' && bounty.lawyerName && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center"><UserCheck className="mr-2 text-blue-500"/>Lawyer Application Review</CardTitle>
+                <CardDescription>
+                  <span className="font-semibold">{bounty.lawyerName}</span> has applied for this bounty.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                 {/* Placeholder for lawyer's application details/profile link if needed */}
+                <p className="text-sm text-muted-foreground mb-4">Review the lawyer's profile and decide whether to assign them to this case.</p>
+                <div className="flex space-x-4">
+                  <Button 
+                    onClick={() => handleApplicationAction('approve')} 
+                    disabled={applicationActionLoading === 'approve'}
+                    className="bg-green-600 hover:bg-green-700"
+                  >
+                    {applicationActionLoading === 'approve' ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <UserCheck className="mr-2 h-4 w-4"/>}
+                    Approve Application
+                  </Button>
+                  <Button 
+                    onClick={() => handleApplicationAction('reject')} 
+                    disabled={applicationActionLoading === 'reject'}
+                    variant="destructive"
+                  >
+                     {applicationActionLoading === 'reject' ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <UserX className="mr-2 h-4 w-4"/>}
+                    Reject Application
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
-                      {milestone.status === 'Submitted' && (
-                        <div className="mt-4 flex space-x-3">
-                          <Button 
-                            onClick={() => handleMilestoneAction(milestone.id, 'approve')}
-                            disabled={actionLoading[milestone.id]}
-                            className="bg-green-600 hover:bg-green-700 text-white"
-                          >
-                            {actionLoading[milestone.id] && actionLoading[milestone.id] === true ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ThumbsUp className="mr-2 h-4 w-4" />}
-                            Approve
-                          </Button>
-                          <Button 
-                            onClick={() => handleMilestoneAction(milestone.id, 'reject')}
-                            disabled={actionLoading[milestone.id]}
-                            variant="destructive"
-                          >
-                             {actionLoading[milestone.id] && actionLoading[milestone.id] === true ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ThumbsDown className="mr-2 h-4 w-4" />}
-                            Reject
-                          </Button>
+          {(bounty.status === 'In Progress' || bounty.status === 'Completed') && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Milestones & Progress</CardTitle>
+                <div className="mt-2">
+                  <Progress value={overallProgress} className="w-full h-3" />
+                  <p className="text-sm text-muted-foreground mt-1">{overallProgress.toFixed(0)}% Complete ({bounty.milestones.filter(m => m.status === 'Approved').length} of {bounty.milestones.length} milestones approved)</p>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <Accordion type="single" collapsible className="w-full">
+                  {bounty.milestones.map((milestone, index) => (
+                    <AccordionItem value={`milestone-${index}`} key={milestone.id}>
+                      <AccordionTrigger className="hover:no-underline text-left">
+                        <div className="flex justify-between items-center w-full">
+                          <span className="font-semibold">{index + 1}. {milestone.name}</span>
+                          {getMilestoneStatusBadge(milestone.status)}
                         </div>
-                      )}
-                       {milestone.status === 'Approved' && milestone.approvedAt && (
-                        <p className="text-xs text-green-600 mt-1">Approved on: {new Date(milestone.approvedAt).toLocaleDateString()}</p>
-                      )}
-                       {milestone.status === 'Rejected' && (
-                        <p className="text-xs text-destructive mt-1">Milestone was rejected. Lawyer may need to resubmit.</p>
-                      )}
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-            </CardContent>
-          </Card>
+                      </AccordionTrigger>
+                      <AccordionContent className="pt-2 pb-4 px-1 space-y-3">
+                        <p className="text-sm text-muted-foreground">{milestone.description}</p>
+                        <p className="text-sm"><strong>Tokens on Approval:</strong> {milestone.unlocksTokens} HAKI</p>
+                        {milestone.dueDate && <p className="text-sm"><strong>Due Date:</strong> {new Date(milestone.dueDate).toLocaleDateString()}</p>}
+                        
+                        {milestone.proof && (typeof milestone.proof === 'string' || milestone.proof instanceof File) && (
+                          <div className="mt-2 p-3 border rounded-md bg-accent/50">
+                            <p className="text-sm font-medium flex items-center">
+                              <FileText className="h-4 w-4 mr-2 text-primary" />
+                              Proof Submitted:
+                            </p>
+                            <p className="text-sm text-muted-foreground ml-6">
+                              {typeof milestone.proof === 'string' ? milestone.proof : milestone.proof.name}
+                              {/* In a real app, this would be a download link */}
+                            </p>
+                          </div>
+                        )}
+
+                        {milestone.status === 'Submitted' && bounty.status === 'In Progress' && (
+                          <div className="mt-4 flex space-x-3">
+                            <Button 
+                              onClick={() => handleMilestoneAction(milestone.id, 'approve')}
+                              disabled={milestoneActionLoading[milestone.id]}
+                              className="bg-green-600 hover:bg-green-700 text-white"
+                            >
+                              {milestoneActionLoading[milestone.id] ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ThumbsUp className="mr-2 h-4 w-4" />}
+                              Approve
+                            </Button>
+                            <Button 
+                              onClick={() => handleMilestoneAction(milestone.id, 'reject')}
+                              disabled={milestoneActionLoading[milestone.id]}
+                              variant="destructive"
+                            >
+                               {milestoneActionLoading[milestone.id] ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ThumbsDown className="mr-2 h-4 w-4" />}
+                              Reject
+                            </Button>
+                          </div>
+                        )}
+                        {milestone.status === 'Approved' && milestone.approvedAt && (
+                          <p className="text-xs text-green-600 mt-1">Approved on: {new Date(milestone.approvedAt).toLocaleDateString()}</p>
+                        )}
+                        {milestone.status === 'Rejected' && (
+                          <p className="text-xs text-destructive mt-1">Milestone was rejected. Lawyer may need to resubmit.</p>
+                        )}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </CardContent>
+            </Card>
+          )}
         </div>
 
         <div className="lg:col-span-1 space-y-6">
            <Card>
             <CardHeader>
-              <CardTitle className="flex items-center"><Users className="mr-2 text-primary"/>Assigned Lawyer</CardTitle>
+              <CardTitle className="flex items-center"><Users className="mr-2 text-primary"/>
+                {bounty.status === 'Awaiting Review' ? 'Applicant Lawyer' : 'Assigned Lawyer'}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               {bounty.lawyerName ? (
                 <>
                   <p className="font-semibold text-lg">{bounty.lawyerName}</p>
-                  {/* Placeholder for more lawyer details or link to profile */}
                   <Button variant="link" size="sm" className="p-0 mt-1" asChild>
                     <Link href={`/lawyer/profile/${bounty.lawyerId || ''}`}>View Profile (Placeholder)</Link>
                   </Button>
                 </>
               ) : (
-                <p className="text-muted-foreground">No lawyer assigned yet.</p>
+                 <p className="text-muted-foreground">{bounty.status === 'Open' ? 'Awaiting applications from lawyers.' : 'No lawyer assigned yet.'}</p>
               )}
             </CardContent>
           </Card>
@@ -260,13 +329,12 @@ export default function NgoBountyDetailsPage() {
                     <li key={index} className="text-sm text-muted-foreground flex items-center">
                       <FileText className="h-4 w-4 mr-2 flex-shrink-0 text-primary" />
                       <span className="truncate" title={file.name}>{file.name}</span>
-                      {/* Placeholder for download link */}
                       {/* <Button variant="link" size="sm" asChild className="ml-auto"><Link href={file.url}>Download</Link></Button> */}
                     </li>
                   ))}
                 </ul>
               ) : (
-                <p className="text-sm text-muted-foreground">No initial case files uploaded by NGO.</p>
+                <p className="text-sm text-muted-foreground">No initial case files uploaded.</p>
               )}
             </CardContent>
           </Card>
