@@ -5,45 +5,24 @@ import Link from "next/link";
 import Image from "next/image";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { Gavel, Users, Briefcase, HeartHandshake, TrendingUp, FileText, Bot } from "lucide-react";
+import { Gavel, ShieldCheck, ClipboardCheck, Network } from "lucide-react";
 
 export default function HomePage() {
   const features = [
     {
-      icon: <Users className="h-10 w-10 text-primary" />,
-      title: "NGO Management",
-      description: "Fund pro-bono case bounties and track their success.",
-      link: "/ngo",
+      icon: <ShieldCheck className="h-10 w-10 text-primary" />,
+      title: "Blockchain for Transparency",
+      description: "Leveraging blockchain for secure and auditable tracking of funds and case progress.",
     },
     {
-      icon: <Briefcase className="h-10 w-10 text-primary" />,
-      title: "Lawyer Portal",
-      description: "Find cases, claim bounties, and manage your pro-bono work.",
-      link: "/lawyer",
-    },
-    {
-      icon: <HeartHandshake className="h-10 w-10 text-primary" />,
-      title: "Donor Contributions",
-      description: "Support specific pro-bono cases and make a difference.",
-      link: "/donor",
-    },
-    {
-      icon: <Bot className="h-10 w-10 text-primary" />,
-      title: "Intelligent Matching",
-      description: "AI helps lawyers find cases that fit their expertise.",
-      link: "/lawyer/match",
-    },
-    {
-      icon: <FileText className="h-10 w-10 text-primary" />,
+      icon: <ClipboardCheck className="h-10 w-10 text-primary" />,
       title: "Milestone Tracking",
-      description: "Transparent progress with token rewards for milestones.",
-      link: "/lawyer/my-cases",
+      description: "Clear progress monitoring with automated rewards as case milestones are achieved.",
     },
     {
-      icon: <TrendingUp className="h-10 w-10 text-primary" />,
-      title: "Performance Analytics",
-      description: "NGOs gain insights into bounty performance and impact.",
-      link: "/ngo/analytics",
+      icon: <Network className="h-10 w-10 text-primary" />,
+      title: "Unified Pro-Bono Ecosystem",
+      description: "Connecting NGOs, lawyers, and donors to streamline access to justice for all.",
     },
   ];
 
@@ -79,10 +58,10 @@ export default function HomePage() {
               <div>
                 <h2 className="text-3xl md:text-4xl font-bold font-headline mb-6">Justice, Connected.</h2>
                 <p className="text-muted-foreground mb-4">
-                  HakiChain Advocate connects NGOs with skilled lawyers for impactful pro-bono work. We use technology to create a transparent and rewarding system for everyone.
+                  HakiChain Advocate connects NGOs, lawyers, and donors for impactful pro-bono work.
                 </p>
                 <p className="text-muted-foreground mb-6">
-                  Our platform offers bounty funding, AI case matching, milestone rewards, and analytics to expand access to justice.
+                  We use technology to create a transparent, efficient, and rewarding system for expanding access to justice.
                 </p>
                 <Button asChild>
                   <Link href="/about">Learn More</Link>
@@ -106,7 +85,7 @@ export default function HomePage() {
         <section className="py-16 md:py-24 bg-background">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl md:text-4xl font-bold font-headline text-center mb-12">Key Features</h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-8">
               {features.map((feature) => (
                 <Card key={feature.title} className="bg-card hover:shadow-2xl transition-shadow duration-300">
                   <CardHeader className="items-center text-center">
@@ -127,7 +106,7 @@ export default function HomePage() {
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-3xl md:text-4xl font-bold font-headline mb-6">Ready to Join?</h2>
             <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-10">
-              Whether you're an NGO, lawyer, or donor, help us build a more just world.
+              Help us build a more just world. Register or learn more.
             </p>
             <div className="space-x-0 md:space-x-4 space-y-4 md:space-y-0 flex flex-col md:flex-row justify-center items-center">
               <Button size="lg" asChild className="w-full md:w-auto">
