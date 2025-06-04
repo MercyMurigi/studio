@@ -19,14 +19,14 @@ import { LogIn, Loader2 } from "lucide-react";
 
 const loginFormSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
-  password: z.string().min(1, { message: "Password is required." }), // Simple check for login
+  password: z.string().min(1, { message: "Password is required." }), 
 });
 
 type LoginFormData = z.infer<typeof loginFormSchema>;
 
 export default function LoginPage() {
   const { toast } = useToast();
-  const router = useRouter(); // You might use this for redirection later
+  const router = useRouter(); 
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<LoginFormData>({
@@ -43,16 +43,26 @@ export default function LoginPage() {
     await new Promise(resolve => setTimeout(resolve, 1500));
     setIsLoading(false);
 
-    console.log("Login data:", data); // In a real app, send this to your backend for auth
+    console.log("Login data:", data); 
 
     toast({
       title: "Login Successful!",
-      description: "Welcome back! You are now logged in.",
+      description: "Welcome back! Redirecting you to your dashboard...",
       variant: "default",
     });
     form.reset();
-    // In a real app, you would redirect the user based on their role or to a dashboard
-    // For example: router.push('/dashboard'); 
+
+    // Simulated role-based redirection
+    if (data.email.toLowerCase().includes("ngo@")) {
+      router.push('/ngo');
+    } else if (data.email.toLowerCase().includes("lawyer@")) {
+      router.push('/lawyer');
+    } else if (data.email.toLowerCase().includes("donor@")) {
+      router.push('/donor');
+    } else {
+      // Fallback to homepage or a generic dashboard if role is not clear from email
+      router.push('/'); 
+    }
   };
 
   return (
@@ -107,7 +117,7 @@ export default function LoginPage() {
               </Button>
             </p>
              <p className="mt-4 text-center text-xs text-muted-foreground">
-              (Login is simulated. No actual authentication occurs.)
+              (Login is simulated. Redirection is based on email content: e.g., 'ngo@...', 'lawyer@...', 'donor@...')
             </p>
           </CardContent>
         </Card>
