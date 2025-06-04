@@ -32,7 +32,7 @@ export default function NgoDashboardPage() {
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
         {stats.map((stat) => (
-          <Card key={stat.title} className="hover:shadow-lg transition-shadow duration-300">
+          <Card key={stat.title} className="hover:shadow-lg transition-shadow duration-300 border-l-4 border-primary">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
               {stat.icon}
@@ -88,3 +88,4 @@ export default function NgoDashboardPage() {
     </>
   );
 }
+
