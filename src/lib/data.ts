@@ -129,7 +129,7 @@ export const mockBounties: Bounty[] = [
     tags: ['Child Custody', 'Refugee Rights', 'International Family Law'],
     location: 'Capital City',
     requiredExperience: 'Specialization in family law, experience with refugee cases preferred',
-    totalRaised: 6500, // Example: bounty amount + 500 from donor
+    totalRaised: 6500, 
     donorContributions: [
       { donorId: 'donor-1', donorName: 'Anonymous Donor', amount: 500, currency: 'HAKI', timestamp: '2024-06-10T12:00:00Z' }
     ]
@@ -142,7 +142,7 @@ export const mockBounties: Bounty[] = [
     ngoName: 'Justice First Initiative',
     amount: 4000,
     currency: 'HAKI',
-    status: 'Completed', // Example of a completed bounty
+    status: 'Completed', 
     lawyerId: 'lawyer-1',
     lawyerName: 'Aisha Khan',
     category: 'Employment Law',
@@ -176,30 +176,37 @@ export const mockDonorProfiles: DonorProfile[] = [
 ];
 
 // Function to get dynamic analytics data based on current mockBounties
-const getAnalyticsData = (): AnalyticsData => {
-  const totalBounties = mockBounties.length;
-  const openBounties = mockBounties.filter(b => b.status === 'Open').length;
-  const completedBounties = mockBounties.filter(b => b.status === 'Completed').length;
-  const totalFundsDistributed = mockBounties
+export const getAnalyticsData = (ngoId?: string): AnalyticsData => {
+  const relevantBounties = ngoId
+    ? mockBounties.filter(b => b.ngoId === ngoId)
+    : mockBounties;
+
+  const totalBounties = relevantBounties.length;
+  const openBounties = relevantBounties.filter(b => b.status === 'Open').length;
+  const completedBounties = relevantBounties.filter(b => b.status === 'Completed').length;
+  const totalFundsDistributed = relevantBounties
     .filter(b => b.status === 'Completed')
     .reduce((sum, b) => sum + b.amount, 0);
-  const successRate = totalBounties > 0 ? (completedBounties / totalBounties) * 100 : 0;
+  
+  const successfulBounties = relevantBounties.filter(b => b.status === 'Completed');
+  const successRate = totalBounties > 0 ? (successfulBounties.length / totalBounties) * 100 : 0;
 
-  const categories = [...new Set(mockBounties.map(b => b.category))];
+
+  const categories = [...new Set(relevantBounties.map(b => b.category))];
   const categoryDistribution = categories.map(cat => ({
     name: cat,
-    value: mockBounties.filter(b => b.category === cat).length,
-  }));
+    value: relevantBounties.filter(b => b.category === cat).length,
+  })).filter(cd => cd.value > 0); // Ensure no zero-value categories if NGO has none in a global category
 
   // Simplified mock data for bounty status over time
-  // In a real app, this would come from historical data
+  // In a real app, this would come from historical data related to the specific NGO
   const bountyStatusOverTime = [
-    { date: "Jan '24", open: 5, completed: 2 },
-    { date: "Feb '24", open: 7, completed: 3 },
-    { date: "Mar '24", open: 8, completed: 5 },
-    { date: "Apr '24", open: 10, completed: 7 },
-    { date: "May '24", open: 12, completed: 9 },
-    { date: "Jun '24", open: openBounties + completedBounties >= 15 ? openBounties : 11, completed: completedBounties >= 10 ? completedBounties : 10}, // Make it a bit more dynamic
+    { date: "Jan '24", open: ngoId ? Math.floor(Math.random() * 3) + 1 : 5, completed: ngoId ? Math.floor(Math.random() * 2) : 2 },
+    { date: "Feb '24", open: ngoId ? Math.floor(Math.random() * 4) + 1 : 7, completed: ngoId ? Math.floor(Math.random() * 2) + 1 : 3 },
+    { date: "Mar '24", open: ngoId ? Math.floor(Math.random() * 5) + 2 : 8, completed: ngoId ? Math.floor(Math.random() * 3) + 1 : 5 },
+    { date: "Apr '24", open: ngoId ? Math.floor(Math.random() * 6) + 2 : 10, completed: ngoId ? Math.floor(Math.random() * 4) + 2 : 7 },
+    { date: "May '24", open: ngoId ? Math.floor(Math.random() * 5) + 3 : 12, completed: ngoId ? Math.floor(Math.random() * 4) + 3 : 9 },
+    { date: "Jun '24", open: openBounties, completed: completedBounties},
   ];
 
 
@@ -208,14 +215,12 @@ const getAnalyticsData = (): AnalyticsData => {
     openBounties,
     completedBounties,
     totalFundsDistributed,
-    averageCompletionTime: "45 days", // Static for now
+    averageCompletionTime: "45 days", // Static for now, could be calculated from relevantBounties
     successRate,
     categoryDistribution,
     bountyStatusOverTime,
   };
 };
-
-export const mockAnalyticsData = getAnalyticsData();
 
 
 export const mockSuggestedCases: AISuggestedCase[] = [
@@ -229,11 +234,11 @@ export const mockSuggestedCases: AISuggestedCase[] = [
         currency: 'HAKI',
     },
     {
-        caseId: 'bounty-x', // Assume another bounty exists
+        caseId: 'bounty-x', 
         caseName: 'Indigenous Land Rights Claim',
         caseDescription: 'Legal support needed for an indigenous community to file a land rights claim against encroachment by a large agricultural firm.',
         matchReason: 'Your background in Human Rights Law and reported interest in indigenous rights makes this a strong potential match.',
-        ngoName: 'Global Rights Watch',
+        ngoName: 'Global Rights Watch', // Different NGO for variety
         bountyAmount: 8000,
         currency: 'HAKI',
     }

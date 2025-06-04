@@ -6,32 +6,61 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { TrendingUp, PieChartIcon as LucidePieChartIcon, BarChartIcon as LucideBarChartIcon, DollarSignIcon } from "lucide-react"; // Using icons for cards
 import { ResponsiveContainer, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Line, Pie, Cell, PieChart, LineChart } from 'recharts';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from "@/components/ui/chart";
-import { mockAnalyticsData } from "@/lib/data";
-
-const categoryChartData = mockAnalyticsData.categoryDistribution;
-const categoryChartConfig = {
-  value: {
-    label: "Bounties",
-  },
-  ...categoryChartData.reduce((acc, entry, index) => {
-    const key = entry.name.toLowerCase().replace(/\s+/g, "");
-    acc[key] = {
-      label: entry.name,
-      color: `hsl(var(--chart-${index + 1}))`,
-    };
-    return acc;
-  }, {} as Record<string, { label: string; color: string }>),
-} satisfies ChartConfig;
-
-
-const statusChartData = mockAnalyticsData.bountyStatusOverTime;
-const statusChartConfig = {
-  open: { label: "Open Bounties", color: "hsl(var(--chart-1))" },
-  completed: { label: "Completed Bounties", color: "hsl(var(--chart-2))" },
-} satisfies ChartConfig;
-
+import { getAnalyticsData, mockNgoProfiles } from "@/lib/data"; // Import getAnalyticsData
+import type { AnalyticsData } from "@/lib/types";
+import { useEffect, useState } from "react";
 
 export default function NgoAnalyticsPage() {
+  const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
+  const [categoryChartConfig, setCategoryChartConfig] = useState<ChartConfig | null>(null);
+  const [statusChartConfig, setStatusChartConfig] = useState<ChartConfig | null>(null);
+
+
+  useEffect(() => {
+    const currentNgo = mockNgoProfiles[0]; // Placeholder for logged-in NGO
+    if (currentNgo) {
+      const data = getAnalyticsData(currentNgo.id);
+      setAnalyticsData(data);
+
+      const catConfig: ChartConfig = {
+        value: {
+          label: "Bounties",
+        },
+        ...data.categoryDistribution.reduce((acc, entry, index) => {
+          const key = entry.name.toLowerCase().replace(/\s+/g, "");
+          acc[key] = {
+            label: entry.name,
+            color: `hsl(var(--chart-${index + 1}))`,
+          };
+          return acc;
+        }, {} as Record<string, { label: string; color: string }>),
+      };
+      setCategoryChartConfig(catConfig);
+
+      const statConfig: ChartConfig = {
+        open: { label: "Open Bounties", color: "hsl(var(--chart-1))" },
+        completed: { label: "Completed Bounties", color: "hsl(var(--chart-2))" },
+      };
+      setStatusChartConfig(statConfig);
+    }
+  }, []);
+
+  if (!analyticsData || !categoryChartConfig || !statusChartConfig) {
+    return (
+      <>
+        <PageTitle
+          title="Bounty Performance Analytics"
+          description="Track the success and impact of your pro-bono case bounties."
+        />
+        <div>Loading analytics data...</div>
+      </>
+    );
+  }
+
+  const categoryChartData = analyticsData.categoryDistribution;
+  const statusChartData = analyticsData.bountyStatusOverTime;
+
+
   return (
     <>
       <PageTitle
@@ -46,7 +75,7 @@ export default function NgoAnalyticsPage() {
             <LucideBarChartIcon className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{mockAnalyticsData.totalBounties}</div>
+            <div className="text-2xl font-bold">{analyticsData.totalBounties}</div>
           </CardContent>
         </Card>
         <Card>
@@ -55,7 +84,7 @@ export default function NgoAnalyticsPage() {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{mockAnalyticsData.openBounties}</div>
+            <div className="text-2xl font-bold">{analyticsData.openBounties}</div>
           </CardContent>
         </Card>
         <Card>
@@ -64,7 +93,7 @@ export default function NgoAnalyticsPage() {
             <LucidePieChartIcon className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{mockAnalyticsData.successRate.toFixed(1)}%</div>
+            <div className="text-2xl font-bold">{analyticsData.successRate.toFixed(1)}%</div>
           </CardContent>
         </Card>
          <Card>
@@ -73,7 +102,7 @@ export default function NgoAnalyticsPage() {
             <DollarSignIcon className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{mockAnalyticsData.totalFundsDistributed.toLocaleString()} HAKI</div>
+            <div className="text-2xl font-bold">{analyticsData.totalFundsDistributed.toLocaleString()} HAKI</div>
           </CardContent>
         </Card>
       </div>
@@ -99,9 +128,8 @@ export default function NgoAnalyticsPage() {
                     cx="50%"
                     cy="50%"
                     outerRadius={135}
-                    innerRadius={50}
-                    labelLine={false}
-                    label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
+                    innerRadius={60}
+                    labelLine={false} 
                   >
                     {categoryChartData.map((entry) => (
                       <Cell key={entry.name} fill={`var(--color-${entry.name.toLowerCase().replace(/\s+/g, "")})`} />
