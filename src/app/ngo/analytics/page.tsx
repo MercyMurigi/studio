@@ -3,7 +3,7 @@
 
 import { PageTitle } from "@/components/shared/PageTitle";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { TrendingUp, PieChartIcon, BarChartIcon as LucideBarChartIcon, DollarSignIcon } from "lucide-react"; // Using icons for cards
+import { TrendingUp, PieChartIcon as LucidePieChartIcon, BarChartIcon as LucideBarChartIcon, DollarSignIcon } from "lucide-react"; // Using icons for cards
 import { ResponsiveContainer, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Line, Pie, Cell, PieChart, LineChart } from 'recharts';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from "@/components/ui/chart";
 import { mockAnalyticsData } from "@/lib/data";
@@ -61,7 +61,7 @@ export default function NgoAnalyticsPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Success Rate</CardTitle>
-            <PieChartIcon className="h-4 w-4 text-muted-foreground" />
+            <LucidePieChartIcon className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{mockAnalyticsData.successRate.toFixed(1)}%</div>
@@ -85,7 +85,7 @@ export default function NgoAnalyticsPage() {
             <CardDescription>Distribution of bounties by legal category.</CardDescription>
           </CardHeader>
           <CardContent className="aspect-[4/3] lg:aspect-[16/9]">
-            <ChartContainer config={categoryChartConfig} className="mx-auto aspect-square max-h-[350px]">
+            <ChartContainer config={categoryChartConfig} className="mx-auto aspect-square max-h-[400px]">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <ChartTooltip 
@@ -98,7 +98,7 @@ export default function NgoAnalyticsPage() {
                     nameKey="name"
                     cx="50%"
                     cy="50%"
-                    outerRadius={120}
+                    outerRadius={135}
                     innerRadius={50}
                     labelLine={false}
                     label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
