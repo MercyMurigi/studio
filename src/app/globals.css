@@ -2,25 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
+/* Removed explicit font-family: Arial here, PT Sans from layout.tsx via font-body class will now apply */
 
 @layer base {
   :root {
-    --background: 220 20% 95%; /* Light mode background for completeness, though app is dark */
+    --background: 220 20% 95%; /* Light mode background */
     --foreground: 220 20% 10%; /* Light mode foreground */
     --card: 220 20% 95%;
     --card-foreground: 220 20% 10%;
     --popover: 220 20% 95%;
     --popover-foreground: 220 20% 10%;
-    --primary: 205 90% 45%; /* Adjusted Ocean Blue for light mode */
+    --primary: 205 90% 45%; 
     --primary-foreground: 210 40% 98%;
-    --secondary: 40 90% 50%; /* Adjusted Gold for light mode */
+    --secondary: 40 90% 50%; 
     --secondary-foreground: 40 90% 10%;
     --muted: 220 20% 90%;
     --muted-foreground: 220 20% 40%;
-    --accent: 40 95% 55%; /* Adjusted Gold Accent for light mode */
+    --accent: 40 95% 55%; 
     --accent-foreground: 40 95% 10%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
@@ -34,7 +32,7 @@ body {
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
 
-    /* Light mode sidebar variables (will be overridden by .dark) */
+    /* Light mode sidebar variables */
     --sidebar-background: 220 20% 98%;
     --sidebar-foreground: 220 20% 15%;
     --sidebar-primary: 205 90% 48%;
@@ -46,11 +44,11 @@ body {
   }
 
   .dark {
-    --background: 220 20% 5%; /* Blackish Dark Blue */
+    --background: 220 25% 4%; /* Darker, more saturated Blackish Dark Blue */
     --foreground: 210 40% 98%; /* Off-White */
-    --card: 220 20% 8%;
+    --card: 220 20% 7%; /* Slightly darker card, distinct from new background */
     --card-foreground: 210 40% 98%;
-    --popover: 220 20% 8%;
+    --popover: 220 20% 7%; /* Match card background */
     --popover-foreground: 210 40% 98%;
     --primary: 205 90% 50%; /* Ocean Blue */
     --primary-foreground: 210 40% 98%; /* White */
@@ -72,13 +70,13 @@ body {
     --chart-5: 340 75% 55%;
 
     /* Dark mode sidebar variables */
-    --sidebar-background: 220 20% 10%;
+    --sidebar-background: 220 20% 6%; /* Distinct sidebar background */
     --sidebar-foreground: 210 40% 98%;
     --sidebar-primary: 205 90% 50%;
     --sidebar-primary-foreground: 210 40% 98%;
     --sidebar-accent: 40 95% 60%;
     --sidebar-accent-foreground: 40 95% 10%;
-    --sidebar-border: 220 20% 20%;
+    --sidebar-border: 220 20% 12%; /* Adjusted border for new sidebar bg */
     --sidebar-ring: 205 90% 50%;
   }
 }
