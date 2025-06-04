@@ -81,7 +81,7 @@ export default function HomePage() {
                   width={600}
                   height={400}
                   className="rounded-lg shadow-xl"
-                  data-ai-hint="legal professionals collaborating"
+                  data-ai-hint="legal collaboration"
                 />
               </div>
             </div>
