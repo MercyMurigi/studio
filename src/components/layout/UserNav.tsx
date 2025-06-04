@@ -1,3 +1,4 @@
+
 "use client"
 
 import Link from "next/link"
@@ -74,12 +75,20 @@ export function UserNav() {
 
   return (
     <div className="flex items-center space-x-2">
-      <Button variant="outline" asChild>
+      <Button 
+        variant="outline" 
+        asChild
+        className="text-primary border-primary hover:bg-primary hover:text-primary-foreground"
+      >
         <Link href="/auth/login">
           <LogIn className="mr-2 h-4 w-4" /> Login
         </Link>
       </Button>
-      <Button asChild>
+      <Button 
+        variant="secondary" 
+        size="lg" 
+        asChild
+      >
         <Link href="/auth/signup">
           <UserPlus className="mr-2 h-4 w-4" /> Sign Up
         </Link>
