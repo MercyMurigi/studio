@@ -307,12 +307,11 @@ export default function NgoBountyDetailsPage() {
             </CardHeader>
             <CardContent>
               {bounty.lawyerName ? (
-                <>
-                  <p className="font-semibold text-lg">{bounty.lawyerName}</p>
-                  <Button variant="link" size="sm" className="p-0 mt-1" asChild>
-                    <Link href={`/lawyer/profile/${bounty.lawyerId || ''}`}>View Profile (Placeholder)</Link>
-                  </Button>
-                </>
+                <Link href={`/lawyer/profile/${bounty.lawyerId || ''}`} passHref legacyBehavior>
+                  <a className="text-lg font-semibold text-primary hover:underline hover:text-primary/80 transition-colors">
+                    {bounty.lawyerName}
+                  </a>
+                </Link>
               ) : (
                  <p className="text-muted-foreground">{bounty.status === 'Open' ? 'Awaiting applications from lawyers.' : 'No lawyer assigned yet.'}</p>
               )}
@@ -358,3 +357,5 @@ export default function NgoBountyDetailsPage() {
     </>
   );
 }
+
+    
