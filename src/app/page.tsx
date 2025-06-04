@@ -43,7 +43,17 @@ export default function HomePage() {
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
               Incentivizing pro-bono legal work with AI-powered matching and transparent bounties.
             </p>
-            {/* Portal buttons removed from here */}
+            <div className="flex flex-col md:flex-row justify-center items-center gap-4">
+              <Button size="lg" asChild className="w-full md:w-auto">
+                <Link href="/auth/signup?role=ngo">Access NGO Portal</Link>
+              </Button>
+              <Button size="lg" variant="secondary" asChild className="w-full md:w-auto">
+                <Link href="/auth/signup?role=lawyer">Access Lawyer Portal</Link>
+              </Button>
+              <Button size="lg" variant="outline" asChild className="w-full md:w-auto">
+                <Link href="/donor">Support as Donor</Link>
+              </Button>
+            </div>
           </div>
         </section>
 
