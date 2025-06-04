@@ -1,0 +1,19 @@
+import type { ReactNode } from 'react';
+import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { LayoutDashboard, Search, Briefcase, UserCog, Bot } from 'lucide-react';
+
+const navItems = [
+  { href: '/lawyer', label: 'Dashboard', icon: <LayoutDashboard className="h-5 w-5" />, matchExact: true },
+  { href: '/lawyer/cases', label: 'Browse Cases', icon: <Search className="h-5 w-5" /> },
+  { href: '/lawyer/my-cases', label: 'My Cases', icon: <Briefcase className="h-5 w-5" /> },
+  { href: '/lawyer/match', label: 'AI Case Match', icon: <Bot className="h-5 w-5" /> },
+  { href: '/lawyer/profile', label: 'Profile', icon: <UserCog className="h-5 w-5" /> },
+];
+
+export default function LawyerDashboardLayout({ children }: { children: ReactNode }) {
+  return (
+    <DashboardLayout navItems={navItems} portalName="Lawyer Portal">
+      {children}
+    </DashboardLayout>
+  );
+}

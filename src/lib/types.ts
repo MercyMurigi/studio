@@ -1,0 +1,118 @@
+
+export interface Milestone {
+  id: string;
+  name: string;
+  description: string;
+  status: 'Pending' | 'Submitted' | 'Approved' | 'Rejected';
+  proof?: File | string; // File object during upload, string (URL/path) when stored
+  unlocksTokens: number;
+  dueDate?: string;
+  submittedAt?: string;
+  approvedAt?: string;
+}
+
+export interface DonorContribution {
+  donorId: string;
+  donorName?: string; 
+  amount: number;
+  currency: string;
+  timestamp: string;
+  message?: string;
+}
+
+export interface Bounty {
+  id: string;
+  title: string;
+  description: string;
+  ngoId: string;
+  ngoName: string;
+  amount: number; 
+  currency: string; 
+  status: 'Open' | 'In Progress' | 'Awaiting Review' | 'Completed' | 'Closed';
+  category: string; 
+  createdAt: string;
+  updatedAt: string;
+  deadline?: string;
+  milestones: Milestone[];
+  lawyerId?: string; 
+  lawyerName?: string;
+  tags?: string[];
+  location?: string; // e.g., "Nairobi, Kenya" or "Remote"
+  requiredExperience?: string; // e.g., "3+ years in human rights law"
+  donorContributions?: DonorContribution[];
+  totalRaised?: number; // Sum of initial bounty and donor contributions
+  caseFiles?: { name: string; url: string; uploadedAt: string }[]; // Documents uploaded by NGO
+}
+
+export interface LawyerProfile {
+  id: string;
+  name: string;
+  email: string;
+  specialization: string[]; // e.g., ["Human Rights Law", "Family Law"]
+  experienceYears: number;
+  bio: string;
+  barAssociationId?: string;
+  linkedInProfile?: string;
+  profilePictureUrl?: string;
+  availability?: 'Full-time' | 'Part-time' | 'Flexible';
+  preferredCaseTypes?: string[];
+}
+
+export interface NgoProfile {
+  id: string;
+  name: string;
+  email: string;
+  description: string;
+  website?: string;
+  registrationNumber?: string;
+  focusAreas?: string[]; // e.g., ["Human Rights", "Environmental Protection"]
+  logoUrl?: string;
+}
+
+export interface DonorProfile {
+  id: string;
+  name: string; // Can be "Anonymous"
+  email?: string; // Optional for anonymous
+  profilePictureUrl?: string;
+}
+
+// For AI Matching Input (Lawyer Side)
+export interface LawyerPreferencesForAI {
+  specialization: string[];
+  preferredCaseTypes: string[];
+  keywords: string; // Free text for specific interests
+  commitmentLevel?: 'short-term' | 'long-term' | 'flexible';
+}
+
+// For AI Matching Input (Case Details - can be derived from Bounty)
+export interface CaseDetailsForAI {
+  caseId: string;
+  caseName: string;
+  caseDescription: string;
+  areaOfLaw: string; // From Bounty.category
+  requiredSkills: string[]; // Can be derived from Bounty.tags or description
+  location?: string;
+  estimatedDuration?: string; // e.g., "3 months"
+}
+
+// For AI Suggested Case Output
+export type AISuggestedCase = {
+  caseId: string; // Bounty ID
+  caseName: string;
+  caseDescription: string;
+  matchReason: string;
+  ngoName: string;
+  bountyAmount: number;
+  currency: string;
+}
+
+export interface AnalyticsData {
+  totalBounties: number;
+  openBounties: number;
+  completedBounties: number;
+  totalFundsDistributed: number;
+  averageCompletionTime: string; // e.g., "30 days"
+  successRate: number; // Percentage
+  categoryDistribution: { name: string; value: number }[]; // For pie chart
+  bountyStatusOverTime: { date: string; open: number; completed: number }[]; // For line chart
+}
