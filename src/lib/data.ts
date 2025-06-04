@@ -34,7 +34,7 @@ export const mockLawyerProfiles: LawyerProfile[] = [
     bio: 'Passionate human rights lawyer with extensive experience in international courts and refugee advocacy. Committed to leveraging legal expertise for impactful pro-bono work.',
     profilePictureUrl: 'https://placehold.co/150x150.png?text=AK',
     availability: 'Part-time',
-    walletBalanceHaki: 15000,
+    walletBalanceHaki: 15500, // Updated after a mock payout
     barAssociationId: 'LSK/A/1234',
     linkedInProfile: 'https://linkedin.com/in/aishakhan',
     preferredCaseTypes: ['Asylum Claims', 'War Crimes Prosecution', 'Civil Liberties Defense'],
@@ -48,7 +48,7 @@ export const mockLawyerProfiles: LawyerProfile[] = [
     bio: 'Environmental lawyer focused on holding corporations accountable for ecological damage and advocating for climate justice policies. Skilled in litigation and policy analysis.',
     profilePictureUrl: 'https://placehold.co/150x150.png?text=BC',
     availability: 'Flexible',
-    walletBalanceHaki: 500,
+    walletBalanceHaki: 6000, // Updated after a mock payout
     barAssociationId: 'BAR/BC/5678',
     linkedInProfile: 'https://linkedin.com/in/bencarter',
     preferredCaseTypes: ['Pollution Litigation', 'Renewable Energy Policy', 'Conservation Law'],
@@ -62,7 +62,7 @@ export const mockLawyerProfiles: LawyerProfile[] = [
     bio: 'Experienced family lawyer dedicated to protecting the rights of children and vulnerable families. Expertise in custody disputes, adoption, and domestic violence cases.',
     profilePictureUrl: 'https://placehold.co/150x150.png?text=MR',
     availability: 'Full-time',
-    walletBalanceHaki: 22000,
+    walletBalanceHaki: 23000, // Updated after a mock payout
     barAssociationId: 'LAW/MR/9012',
     linkedInProfile: 'https://linkedin.com/in/mariarodriguez',
     preferredCaseTypes: ['Child Custody', 'Adoption Services', 'Protection Orders'],
@@ -312,9 +312,9 @@ export const mockSuggestedCases: AISuggestedCase[] = [
 
 export const HAKI_CONVERSION_RATE = 10; // 1 USD = 10 HAKI
 
-export const mockWalletTransactions: WalletTransaction[] = [
+export const mockNgoWalletTransactions: WalletTransaction[] = [
   {
-    id: 'txn-1',
+    id: 'txn-ngo-1',
     date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days ago
     type: 'Bounty Funded',
     description: 'Funded "Defend Right to Protest - City Square Case"',
@@ -325,7 +325,7 @@ export const mockWalletTransactions: WalletTransaction[] = [
     currency: 'HAKI',
   },
   {
-    id: 'txn-2',
+    id: 'txn-ngo-2',
     date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), // 5 days ago
     type: 'Deposit',
     description: 'Deposit from Bank Transfer XXXX-1234',
@@ -335,7 +335,7 @@ export const mockWalletTransactions: WalletTransaction[] = [
     currency: 'USD', 
   },
   {
-    id: 'txn-3',
+    id: 'txn-ngo-3',
     date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days ago
     type: 'Bounty Funded',
     description: 'Funded "Stop Illegal Deforestation - Green Valley Project"',
@@ -346,7 +346,7 @@ export const mockWalletTransactions: WalletTransaction[] = [
     currency: 'HAKI',
   },
   {
-    id: 'txn-4',
+    id: 'txn-ngo-4',
     date: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(), // 10 days ago
     type: 'Initial Allocation',
     description: 'Initial HAKI token allocation for platform onboarding',
@@ -355,7 +355,7 @@ export const mockWalletTransactions: WalletTransaction[] = [
     currency: 'HAKI',
   },
   {
-    id: 'txn-5',
+    id: 'txn-ngo-5',
     date: new Date().toISOString(), 
     type: 'Withdrawal',
     description: 'Withdrawal to Bank Account YYYY-5678',
@@ -366,3 +366,50 @@ export const mockWalletTransactions: WalletTransaction[] = [
   },
 ];
 
+export const mockLawyerWalletTransactions: WalletTransaction[] = [
+  {
+    id: 'txn-lawyer-1',
+    date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
+    type: 'Milestone Payout',
+    description: 'Payout for "Case Review and Advice" on "Legal Aid for Unfair Dismissal"',
+    amountHaki: 800, // Corresponds to bounty-4, milestone m4-1
+    status: 'Completed',
+    relatedBountyId: 'bounty-4',
+    from: 'Escrow: bounty-4',
+    currency: 'HAKI',
+  },
+  {
+    id: 'txn-lawyer-2',
+    date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 days ago
+    type: 'Withdrawal',
+    description: 'Withdrawal to Mobile Money ZZZZ-7890',
+    amountHaki: -500,
+    status: 'Completed',
+    to: 'Mobile Money ZZZZ-7890',
+    currency: 'HAKI',
+  },
+  {
+    id: 'txn-lawyer-3',
+    date: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(), // 6 days ago
+    type: 'Milestone Payout',
+    description: 'Payout for "Gather Evidence & Witness Statements" on "Stop Illegal Deforestation"',
+    amountHaki: 1000, // Corresponds to bounty-2, milestone m2-1
+    status: 'Completed',
+    relatedBountyId: 'bounty-2',
+    from: 'Escrow: bounty-2',
+    currency: 'HAKI',
+  },
+   {
+    id: 'txn-lawyer-4',
+    date: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(), // 15 days ago
+    type: 'Initial Allocation', // For example, a welcome bonus
+    description: 'Welcome bonus for joining HakiChain',
+    amountHaki: 200,
+    status: 'Completed',
+    currency: 'HAKI',
+  },
+];
+
+// Alias for clarity, as mockWalletTransactions was more NGO-centric before
+export const mockWalletTransactions = mockNgoWalletTransactions;
+```
