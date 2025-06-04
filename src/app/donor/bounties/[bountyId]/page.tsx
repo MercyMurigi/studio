@@ -15,7 +15,8 @@ import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { mockBounties, mockNgoProfiles, HAKI_CONVERSION_RATE } from "@/lib/data";
 import type { Bounty, Milestone } from "@/lib/types";
-import { ArrowLeft, DollarSign, CheckCircle, Users, Tag, CalendarDays, Info, Briefcase, CreditCard, Smartphone, Banknote, Bitcoin, HeartHandshake, Loader2 } from "lucide-react";
+import { ArrowLeft, DollarSign, CheckCircle, Users, Tag, CalendarDays, Info, Briefcase, CreditCard, Smartphone, Banknote, Bitcoin, HeartHandshake, Loader2, User, LogIn } from "lucide-react";
+import { Separator } from '@/components/ui/separator';
 
 export default function FundBountyPage() {
   const params = useParams();
@@ -31,6 +32,7 @@ export default function FundBountyPage() {
   const [cryptoAmount, setCryptoAmount] = useState<string>("");
   const [selectedCrypto, setSelectedCrypto] = useState<string>("USDC"); // Default crypto
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [contributionMode, setContributionMode] = useState<'guest' | 'loggedIn'>('guest'); // conceptual
 
   useEffect(() => {
     const foundBounty = mockBounties.find(b => b.id === bountyId);
@@ -80,15 +82,24 @@ export default function FundBountyPage() {
 
     toast({
       title: "Donation Submitted!",
-      description: `Thank you for your generous donation of ${donationAmountHaki} HAKI via ${method} to "${bounty?.title}". Your contribution is being processed.`,
+      description: `Thank you for your generous ${contributionMode === 'guest' ? 'anonymous ' : ''}donation of ${donationAmountHaki} HAKI via ${method} to "${bounty?.title}". Your contribution is being processed.`,
       variant: "default",
     });
-    // Optionally clear fields or redirect
     setDonationAmountHaki("");
     setDonationAmountUsd("");
     setMpesaPhone("");
     setCryptoAmount("");
   };
+  
+  const handleContinueAsGuest = () => {
+    setContributionMode('guest');
+    toast({
+      title: "Contributing as Guest",
+      description: "Your contribution will be anonymous. You can log in to track impact and earn badges.",
+    });
+    // In a real app, you might set a flag or proceed. Here, it just confirms the mode.
+  };
+
 
   if (isLoading) {
     return (
@@ -111,8 +122,7 @@ export default function FundBountyPage() {
   }
 
   const fundingGoal = bounty.totalRaised && bounty.totalRaised > bounty.amount ? bounty.totalRaised : bounty.amount;
-  const currentRaised = bounty.amount; // Assuming bounty.amount is what's currently secured by NGO or initial donors.
-                                     // A more accurate model would have bounty.currentFundsRaised. For now, using bounty.amount as baseline.
+  const currentRaised = bounty.amount; 
   const progressPercentage = fundingGoal > 0 ? (currentRaised / fundingGoal) * 100 : 0;
 
   return (
@@ -180,9 +190,35 @@ export default function FundBountyPage() {
           <Card className="shadow-xl sticky top-24">
             <CardHeader>
               <CardTitle className="font-headline text-2xl flex items-center"><HeartHandshake className="mr-2 text-primary h-7 w-7"/> Fund This Case</CardTitle>
-              <CardDescription>Your contribution makes a difference.</CardDescription>
+              <CardDescription>Your contribution makes a real difference.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
+              {/* Anonymous/Login Choice Section - This section will be visible if not logged in conceptually */}
+              {contributionMode === 'guest' && ( // Conceptually, this condition would be based on actual auth state
+                <div className="pb-4 border-b">
+                  <h3 className="text-md font-semibold mb-1 text-center">Contribute Your Way</h3>
+                  <p className="text-xs text-muted-foreground mb-3 text-center">
+                    You&apos;re contributing as a guest. Log in to track impact and earn badges.
+                  </p>
+                  <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
+                    <Button 
+                      variant="outline" 
+                      className="flex-1" 
+                      onClick={handleContinueAsGuest}
+                      disabled={isProcessingPayment}
+                    >
+                      <User className="mr-2 h-4 w-4" /> Continue as Guest
+                    </Button>
+                    <Button asChild className="flex-1 bg-primary hover:bg-primary/90" disabled={isProcessingPayment}>
+                      <Link href="/auth/login">
+                        <LogIn className="mr-2 h-4 w-4" /> Login / Sign Up
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
+              )}
+              {/* End Anonymous/Login Choice Section */}
+            
               <div>
                 <Label className="font-semibold">Funding Goal</Label>
                 <div className="text-2xl font-bold text-primary">{fundingGoal.toLocaleString()} HAKI</div>
@@ -268,17 +304,6 @@ export default function FundBountyPage() {
                         onChange={(e) => setCryptoAmount(e.target.value)}
                         disabled={isProcessingPayment}
                     />
-                    {/* Basic select for crypto type - can be expanded */}
-                    {/* 
-                    <Select value={selectedCrypto} onValueChange={setSelectedCrypto} disabled={isProcessingPayment}>
-                        <SelectTrigger className="mt-2"><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="USDC">USDC</SelectItem>
-                            <SelectItem value="ETH">ETH</SelectItem>
-                            <SelectItem value="BTC">BTC</SelectItem>
-                        </SelectContent>
-                    </Select> 
-                    */}
                   </div>
                    <Button onClick={() => handlePayment(`Crypto (${selectedCrypto})`)} className="w-full" disabled={!donationAmountHaki || parseFloat(donationAmountHaki) <=0 || isProcessingPayment || !cryptoAmount}>
                     {isProcessingPayment ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <CheckCircle className="mr-2 h-4 w-4"/>}
@@ -293,5 +318,6 @@ export default function FundBountyPage() {
     </div>
   );
 }
+    
 
     
