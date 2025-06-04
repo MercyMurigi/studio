@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -5,6 +6,7 @@ import { PageTitle } from "@/components/shared/PageTitle";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Link from "next/link";
 import { mockBounties } from "@/lib/data";
@@ -19,7 +21,6 @@ export default function BrowseCasesPage() {
   const [locationFilter, setLocationFilter] = useState("all");
 
   useEffect(() => {
-    // Simulate fetching data
     const openBounties = mockBounties.filter(b => b.status === 'Open');
     setAllBounties(openBounties);
     setFilteredBounties(openBounties);
@@ -55,7 +56,7 @@ export default function BrowseCasesPage() {
     <>
       <PageTitle
         title="Browse Available Cases"
-        description="Find pro-bono opportunities that match your expertise and passion. Claim a bounty and make a difference."
+        description="Find pro-bono opportunities that match your expertise and passion. This page lists all currently open and available bounties on the HakiChain platform. Claim a bounty and make a difference."
       />
 
       <Card className="mb-8 p-6 shadow">
