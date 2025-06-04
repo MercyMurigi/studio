@@ -58,12 +58,11 @@ export default function SignupPage() {
 
     toast({
       title: "Account Created!",
-      description: `Welcome, ${data.fullName}! Your account as a ${data.role} has been successfully created. You can now log in.`,
+      description: `Welcome, ${data.fullName}! Your account as a ${data.role} has been successfully created. Redirecting to login...`,
       variant: "default",
     });
     form.reset();
-    // Optionally redirect to login or a dashboard page
-    // router.push('/auth/login'); 
+    router.push('/auth/login'); 
   };
 
   return (
