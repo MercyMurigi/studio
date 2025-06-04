@@ -412,4 +412,3 @@ export const mockLawyerWalletTransactions: WalletTransaction[] = [
 
 // Alias for clarity, as mockWalletTransactions was more NGO-centric before
 export const mockWalletTransactions = mockNgoWalletTransactions;
-```
