@@ -9,7 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Briefcase, Mail, Linkedin, CalendarDays, Award, UserCheck, Wallet, Edit3, Building, MessageCircle, ShieldQuestion } from "lucide-react";
+import { Briefcase, Linkedin, CalendarDays, Award, UserCheck, Wallet, Edit3, Building, MessageCircle, ShieldQuestion } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export default function LawyerProfilePage() {
@@ -54,18 +54,17 @@ export default function LawyerProfilePage() {
                     <CardDescription className="text-md text-muted-foreground">{lawyer.specialization[0]}</CardDescription>
                 </CardHeader>
                 <CardContent className="text-center px-6 pb-6">
-                     <Button asChild className="w-full">
-                        <Link href={`mailto:${lawyer.email}`}>
-                            <Mail className="mr-2 h-4 w-4" /> Contact via Email
-                        </Link>
-                    </Button>
                     {lawyer.linkedInProfile && (
-                        <Button variant="outline" asChild className="w-full mt-2">
+                        <Button variant="outline" asChild className="w-full">
                             <Link href={lawyer.linkedInProfile} target="_blank" rel="noopener noreferrer">
                                 <Linkedin className="mr-2 h-4 w-4" /> LinkedIn Profile
                             </Link>
                         </Button>
                     )}
+                    {/* Placeholder for future Chat Button if needed */}
+                    {/* <Button variant="default" className="w-full mt-2">
+                        <MessageSquare className="mr-2 h-4 w-4" /> Chat on HakiChain (Coming Soon)
+                    </Button> */}
                 </CardContent>
             </Card>
             
@@ -109,7 +108,7 @@ export default function LawyerProfilePage() {
 
           <Card className="shadow-lg">
             <CardHeader>
-              <CardTitle className="flex items-center font-headline"><ShieldQuestion className="mr-2 h-5 w-5 text-primary" />Areas of Expertise</CardTitle> {/* Changed icon */}
+              <CardTitle className="flex items-center font-headline"><ShieldQuestion className="mr-2 h-5 w-5 text-primary" />Areas of Expertise</CardTitle>
             </CardHeader>
             <CardContent>
               <div>
