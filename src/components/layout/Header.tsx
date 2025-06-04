@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { Logo } from '@/components/shared/Logo';
-import { Button } from '@/components/ui/button';
-import { UserNav } from './UserNav'; // UserNav will be created later
+import { UserNav } from './UserNav'; 
 
 export function Header() {
   return (
@@ -9,15 +8,6 @@ export function Header() {
       <div className="container flex h-16 max-w-screen-2xl items-center">
         <Logo />
         <nav className="ml-auto flex items-center space-x-4">
-          <Button variant="ghost" asChild>
-            <Link href="/ngo">NGO Portal</Link>
-          </Button>
-          <Button variant="ghost" asChild>
-            <Link href="/lawyer">Lawyer Portal</Link>
-          </Button>
-          <Button variant="ghost" asChild>
-            <Link href="/donor">Donor Portal</Link>
-          </Button>
           <UserNav />
         </nav>
       </div>
