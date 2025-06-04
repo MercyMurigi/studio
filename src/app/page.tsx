@@ -8,6 +8,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Scale, ShieldCheck, ClipboardCheck, Network, FileText, Briefcase, HeartHandshake } from "lucide-react";
 import { JusticeAnimationBackground } from "@/components/shared/JusticeAnimationBackground";
+import React from "react";
 
 export default function HomePage() {
   const features = [
@@ -30,17 +31,17 @@ export default function HomePage() {
 
   const howItWorksSteps = [
     {
-      icon: <FileText className="h-10 w-10 text-secondary" />,
+      icon: <FileText />, // Icon component itself
       title: "NGOs Create Bounties",
       description: "NGOs define pro-bono cases, set milestones, and offer HAKI token rewards on our secure platform.",
     },
     {
-      icon: <Briefcase className="h-10 w-10 text-secondary" />,
+      icon: <Briefcase />,
       title: "Lawyers Claim Cases",
       description: "Qualified lawyers browse available bounties, apply for cases matching their expertise, and work towards justice.",
     },
     {
-      icon: <HeartHandshake className="h-10 w-10 text-secondary" />,
+      icon: <HeartHandshake />,
       title: "Progress & Rewards",
       description: "Donors can fund impactful cases. Lawyers earn HAKI tokens as milestones are verifiably completed, ensuring transparency.",
     },
@@ -125,21 +126,21 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* How It Works Section */}
+        {/* How It Works Section - Redesigned */}
         <section className="py-16 md:py-24 bg-background">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl md:text-4xl font-bold font-headline text-center mb-12">Simple Steps to Justice</h2>
-            <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-8">
-              {howItWorksSteps.map((step) => (
-                <Card key={step.title} className="bg-card hover:shadow-xl transition-shadow duration-300 flex flex-col">
-                  <CardHeader className="items-center text-center">
-                    {step.icon}
-                    <CardTitle className="mt-4 font-headline">{step.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="text-center flex-grow">
-                    <CardDescription>{step.description}</CardDescription>
-                  </CardContent>
-                </Card>
+            <h2 className="text-3xl md:text-4xl font-bold font-headline text-center mb-16">Simple Steps to Justice</h2>
+            <div className="max-w-3xl mx-auto space-y-12">
+              {howItWorksSteps.map((step, index) => (
+                <div key={step.title} className="flex flex-col sm:flex-row items-start gap-6 md:gap-8">
+                  <div className="flex-shrink-0 text-secondary bg-secondary/10 p-4 rounded-full">
+                    {React.cloneElement(step.icon, { className: "h-10 w-10"})}
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-semibold font-headline mb-3">{step.title}</h3>
+                    <p className="text-muted-foreground text-md leading-relaxed">{step.description}</p>
+                  </div>
+                </div>
               ))}
             </div>
           </div>
