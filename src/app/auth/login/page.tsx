@@ -47,34 +47,28 @@ export default function LoginPage() {
 
     toast({
       title: "Login Successful!",
-      description: "Welcome back! Redirecting you to your dashboard...",
+      description: "Welcome back! Redirecting you...",
       variant: "default",
     });
 
-    let userRole: string | null = null;
+    let userRoleFromStorage: string | null = null;
     if (typeof window !== "undefined") {
-      userRole = localStorage.getItem("userRoleForLogin");
-      localStorage.removeItem("userRoleForLogin"); // Clear it after use
+      userRoleFromStorage = localStorage.getItem("userRoleForLogin");
+      if (userRoleFromStorage) { // Only remove if it was actually found and read
+        localStorage.removeItem("userRoleForLogin");
+      }
     }
 
-    if (userRole === "ngo") {
+    if (userRoleFromStorage === "ngo") {
       router.push('/ngo');
-    } else if (userRole === "lawyer") {
+    } else if (userRoleFromStorage === "lawyer") {
       router.push('/lawyer');
-    } else if (userRole === "donor") {
+    } else if (userRoleFromStorage === "donor") {
       router.push('/donor');
     } else {
-      // Fallback if role not found in localStorage or doesn't match
-      // For safety, or if direct login, could still use email heuristic as a secondary check or just go to home
-      if (data.email.toLowerCase().includes("ngo@")) {
-        router.push('/ngo');
-      } else if (data.email.toLowerCase().includes("lawyer@")) {
-        router.push('/lawyer');
-      } else if (data.email.toLowerCase().includes("donor@")) {
-        router.push('/donor');
-      } else {
-        router.push('/');
-      }
+      // If role from signup isn't found in localStorage, redirect to homepage
+      console.log("Role not found in localStorage or unrecognized, redirecting to home.");
+      router.push('/');
     }
     form.reset();
   };
@@ -131,7 +125,7 @@ export default function LoginPage() {
               </Button>
             </p>
              <p className="mt-4 text-center text-xs text-muted-foreground">
-              (Login is simulated. Redirection preference is based on role selected during last signup, then email content as fallback: e.g., 'ngo@...', 'lawyer@...', 'donor@...')
+              (Login is simulated. Redirection is based on the role selected during your last signup. If not found, you'll be taken to the homepage.)
             </p>
           </CardContent>
         </Card>
