@@ -69,7 +69,7 @@ export default function NgoAnalyticsPage() {
       />
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
-        <Card>
+        <Card className="border-l-4 border-primary">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Bounties</CardTitle>
             <LucideBarChartIcon className="h-4 w-4 text-muted-foreground" />
@@ -78,7 +78,7 @@ export default function NgoAnalyticsPage() {
             <div className="text-2xl font-bold">{analyticsData.totalBounties}</div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border-l-4 border-primary">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Open Bounties</CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
@@ -87,7 +87,7 @@ export default function NgoAnalyticsPage() {
             <div className="text-2xl font-bold">{analyticsData.openBounties}</div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border-l-4 border-primary">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Success Rate</CardTitle>
             <LucidePieChartIcon className="h-4 w-4 text-muted-foreground" />
@@ -96,7 +96,7 @@ export default function NgoAnalyticsPage() {
             <div className="text-2xl font-bold">{analyticsData.successRate.toFixed(1)}%</div>
           </CardContent>
         </Card>
-         <Card>
+         <Card className="border-l-4 border-primary">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Funds Distributed</CardTitle>
             <DollarSignIcon className="h-4 w-4 text-muted-foreground" />
@@ -192,3 +192,4 @@ export default function NgoAnalyticsPage() {
     </>
   );
 }
+
