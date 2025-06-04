@@ -98,9 +98,11 @@ export default function ManageBountiesPage() {
                         <span className="text-muted-foreground">Unassigned</span>
                       )}
                     </TableCell>
-                    <TableCell className="text-right">
-                       <Button variant="ghost" size="icon" asChild title="View Details">
-                        <Link href={`/ngo/bounties/${bounty.id}`}><Eye className="h-4 w-4" /></Link>
+                    <TableCell className="text-right space-x-1">
+                       <Button variant="outline" size="sm" asChild title="View Details">
+                        <Link href={`/ngo/bounties/${bounty.id}`}>
+                          <Eye className="mr-2 h-4 w-4" /> View
+                        </Link>
                       </Button>
                       <Button variant="ghost" size="icon" asChild title="Edit Bounty (Placeholder)">
                         {/* Link should eventually go to an edit page e.g. /ngo/bounties/edit/${bounty.id} */}
