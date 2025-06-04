@@ -85,9 +85,10 @@ export function UserNav() {
         </Link>
       </Button>
       <Button 
-        variant="secondary" 
+        variant="outline" 
         size="lg" 
         asChild
+        className="text-secondary border-secondary hover:bg-secondary hover:text-secondary-foreground"
       >
         <Link href="/auth/signup">
           <UserPlus className="mr-2 h-4 w-4" /> Sign Up
@@ -96,3 +97,4 @@ export function UserNav() {
     </div>
   )
 }
+
