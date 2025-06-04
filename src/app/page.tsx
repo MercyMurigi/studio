@@ -12,17 +12,17 @@ import { JusticeAnimationBackground } from "@/components/shared/JusticeAnimation
 export default function HomePage() {
   const features = [
     {
-      icon: <ShieldCheck className="h-10 w-10 text-primary" />,
+      icon: <ShieldCheck className="h-10 w-10 text-secondary" />,
       title: "Blockchain for Transparency",
       description: "Leveraging blockchain for secure and auditable tracking of funds and case progress.",
     },
     {
-      icon: <ClipboardCheck className="h-10 w-10 text-primary" />,
+      icon: <ClipboardCheck className="h-10 w-10 text-secondary" />,
       title: "Milestone Tracking",
       description: "Clear progress monitoring with automated rewards as case milestones are achieved.",
     },
     {
-      icon: <Network className="h-10 w-10 text-primary" />,
+      icon: <Network className="h-10 w-10 text-secondary" />,
       title: "Unified Pro-Bono Ecosystem",
       description: "Connecting NGOs, lawyers, and donors to streamline access to justice for all.",
     },
