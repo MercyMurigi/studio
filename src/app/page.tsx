@@ -6,7 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { Scale, ShieldCheck, ClipboardCheck, Network, FileText, Briefcase, HeartHandshake } from "lucide-react";
+import { Scale, ShieldCheck, ClipboardCheck, Network } from "lucide-react";
 import { JusticeAnimationBackground } from "@/components/shared/JusticeAnimationBackground";
 import React from "react";
 
@@ -26,24 +26,6 @@ export default function HomePage() {
       icon: <Network className="h-10 w-10 text-secondary" />,
       title: "Unified Pro-Bono Ecosystem",
       description: "Connecting NGOs, lawyers, and donors to streamline access to justice for all.",
-    },
-  ];
-
-  const howItWorksSteps = [
-    {
-      icon: <FileText />, // Icon component itself
-      title: "NGOs Create Bounties",
-      description: "NGOs define pro-bono cases, set milestones, and offer HAKI token rewards on our secure platform.",
-    },
-    {
-      icon: <Briefcase />,
-      title: "Lawyers Claim Cases",
-      description: "Qualified lawyers browse available bounties, apply for cases matching their expertise, and work towards justice.",
-    },
-    {
-      icon: <HeartHandshake />,
-      title: "Progress & Rewards",
-      description: "Donors can fund impactful cases. Lawyers earn HAKI tokens as milestones are verifiably completed, ensuring transparency.",
     },
   ];
 
@@ -121,26 +103,6 @@ export default function HomePage() {
                     <CardDescription>{feature.description}</CardDescription>
                   </CardContent>
                 </Card>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* How It Works Section - Redesigned */}
-        <section className="py-16 md:py-24 bg-background">
-          <div className="container mx-auto px-4">
-            <h2 className="text-3xl md:text-4xl font-bold font-headline text-center mb-16">Simple Steps to Justice</h2>
-            <div className="max-w-3xl mx-auto space-y-12">
-              {howItWorksSteps.map((step, index) => (
-                <div key={step.title} className="flex flex-col sm:flex-row items-start gap-6 md:gap-8">
-                  <div className="flex-shrink-0 text-secondary bg-secondary/10 p-4 rounded-full">
-                    {React.cloneElement(step.icon, { className: "h-10 w-10"})}
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-2xl font-semibold font-headline mb-3">{step.title}</h3>
-                    <p className="text-muted-foreground text-md leading-relaxed">{step.description}</p>
-                  </div>
-                </div>
               ))}
             </div>
           </div>
