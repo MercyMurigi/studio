@@ -1,5 +1,6 @@
 
-import type { Bounty, LawyerProfile, NgoProfile, DonorProfile, AnalyticsData, AISuggestedCase, WalletTransaction } from './types';
+
+import type { Bounty, LawyerProfile, NgoProfile, DonorProfile, AnalyticsData, AISuggestedCase, WalletTransaction, ChampionBadge } from './types';
 
 export const mockNgoProfiles: NgoProfile[] = [
   {
@@ -92,8 +93,11 @@ export let mockBounties: Bounty[] = [
     tags: ['Protest Rights', 'Civil Liberties', 'Freedom of Assembly'],
     location: 'Capital City',
     requiredExperience: '3+ years in human rights litigation',
-    totalRaised: 5000,
-    caseFiles: [{name: "Initial Police Report.pdf", url: "/placeholder-doc.pdf", uploadedAt: "2024-07-15T10:00:00Z"}]
+    totalRaised: 5500,
+    caseFiles: [{name: "Initial Police Report.pdf", url: "/placeholder-doc.pdf", uploadedAt: "2024-07-15T10:00:00Z"}],
+    donorContributions: [
+      { donorId: 'donor-1', donorName: 'Anonymous Philanthropist', amount: 500, currency: 'HAKI', timestamp: '2024-07-16T12:00:00Z' }
+    ]
   },
   {
     id: 'bounty-2',
@@ -149,9 +153,10 @@ export let mockBounties: Bounty[] = [
     tags: ['Child Custody', 'Refugee Rights', 'International Family Law'],
     location: 'Capital City',
     requiredExperience: 'Specialization in family law, experience with refugee cases preferred',
-    totalRaised: 6500, 
+    totalRaised: 7000, 
     donorContributions: [
-      { donorId: 'donor-1', donorName: 'Anonymous Donor', amount: 500, currency: 'HAKI', timestamp: '2024-06-10T12:00:00Z' }
+      { donorId: 'donor-1', donorName: 'Anonymous Philanthropist', amount: 500, currency: 'HAKI', timestamp: '2024-06-10T12:00:00Z' },
+      { donorId: 'donor-2', donorName: 'Community Support Fund', amount: 500, currency: 'HAKI', timestamp: '2024-07-01T15:00:00Z' }
     ]
   },
   {
@@ -207,18 +212,65 @@ export let mockBounties: Bounty[] = [
   }
 ];
 
+const mockChampionBadges: ChampionBadge[] = [
+  {
+    category: 'Human Rights Law',
+    badgeName: 'Human Rights Defender',
+    badgeImageUrl: 'https://placehold.co/64x64.png?text=HRD',
+    description: 'Awarded for significant contributions to human rights causes.',
+    dateAchieved: '2024-07-20T10:00:00Z',
+  },
+  {
+    category: 'Family Law',
+    badgeName: 'Family Justice Advocate',
+    badgeImageUrl: 'https://placehold.co/64x64.png?text=FJA',
+    description: 'Recognizes outstanding support for family law cases.',
+    dateAchieved: '2024-07-05T10:00:00Z',
+  },
+];
+
+
 export const mockDonorProfiles: DonorProfile[] = [
   {
     id: 'donor-1',
     name: 'Anonymous Philanthropist',
-    walletBalanceHaki: 500000,
+    walletBalanceHaki: 498000, // 500000 - 500 (bounty-1) - 500 (bounty-3) - 1000 + (placeholder 1000) = 498000
+    totalContributionsHaki: 1000,
+    contributedBountyIds: ['bounty-1', 'bounty-3'],
+    championBadges: [
+      {
+        category: 'Human Rights Law',
+        badgeName: 'Human Rights Champion',
+        badgeImageUrl: 'https://placehold.co/64x64.png?text=HRC',
+        description: 'For championing human rights causes.',
+        dateAchieved: '2024-07-16T12:00:00Z',
+      },
+       {
+        category: 'Family Law',
+        badgeName: 'Family Ally',
+        badgeImageUrl: 'https://placehold.co/64x64.png?text=FA',
+        description: 'For supporting family law initiatives.',
+        dateAchieved: '2024-06-10T12:00:00Z',
+      }
+    ]
   },
   {
     id: 'donor-2',
     name: 'Community Support Fund',
     email: 'csf@support.org',
     profilePictureUrl: 'https://placehold.co/100x100.png?text=CSF',
-    walletBalanceHaki: 1000000,
+    walletBalanceHaki: 999500, // 1000000 - 500 (bounty-3)
+    totalContributionsHaki: 500,
+    contributedBountyIds: ['bounty-3'],
+    championBadges: [
+       {
+        category: 'Family Law',
+        badgeName: 'Family Justice Advocate',
+        badgeImageUrl: 'https://placehold.co/64x64.png?text=FJA',
+        description: 'For significant contributions to family justice.',
+        dateAchieved: '2024-07-01T15:00:00Z',
+      }
+    ],
   },
 ];
 
@@ -412,3 +464,4 @@ export const mockLawyerWalletTransactions: WalletTransaction[] = [
 
 // Alias for clarity, as mockWalletTransactions was more NGO-centric before
 export const mockWalletTransactions = mockNgoWalletTransactions;
+

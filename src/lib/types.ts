@@ -72,12 +72,23 @@ export interface NgoProfile {
   walletBalanceHaki?: number;
 }
 
+export interface ChampionBadge {
+  category: string;
+  badgeName: string;
+  badgeImageUrl: string;
+  description: string;
+  dateAchieved: string;
+}
+
 export interface DonorProfile {
   id: string;
   name: string; // Can be "Anonymous"
   email?: string; // Optional for anonymous
   profilePictureUrl?: string;
   walletBalanceHaki?: number;
+  totalContributionsHaki?: number;
+  contributedBountyIds?: string[];
+  championBadges?: ChampionBadge[];
 }
 
 // For AI Matching Input (Lawyer Side)
