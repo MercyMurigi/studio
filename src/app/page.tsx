@@ -34,14 +34,14 @@ export default function HomePage() {
       <Header />
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative py-20 md:py-32 bg-gradient-to-br from-background to-primary/10 overflow-hidden">
+        <section className="relative py-20 md:py-32 bg-gradient-to-br from-background to-primary/20 overflow-hidden">
           <JusticeAnimationBackground />
           <div className="container mx-auto px-4 text-center relative z-10">
             <Scale className="h-24 w-24 text-primary mx-auto mb-6" />
             <h1 className="text-4xl md:text-6xl font-bold font-headline mb-6">
-              <span className="text-primary">HakiChain</span>
+              <span className="text-primary">Haki</span><span className="text-secondary">Chain</span>
             </h1>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
+            <p className="text-lg md:text-xl text-foreground max-w-2xl mx-auto mb-10">
               Incentivizing pro-bono legal work with AI-powered matching and transparent bounties.
             </p>
             <div className="flex flex-col md:flex-row justify-center items-center gap-4">
