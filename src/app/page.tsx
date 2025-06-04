@@ -1,4 +1,5 @@
 
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
@@ -6,6 +7,7 @@ import Image from "next/image";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Scale, ShieldCheck, ClipboardCheck, Network } from "lucide-react";
+import { JusticeAnimationBackground } from "@/components/shared/JusticeAnimationBackground";
 
 export default function HomePage() {
   const features = [
@@ -31,8 +33,9 @@ export default function HomePage() {
       <Header />
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="py-20 md:py-32 bg-gradient-to-br from-background to-primary/10">
-          <div className="container mx-auto px-4 text-center">
+        <section className="relative py-20 md:py-32 bg-gradient-to-br from-background to-primary/10 overflow-hidden">
+          <JusticeAnimationBackground />
+          <div className="container mx-auto px-4 text-center relative z-10">
             <Scale className="h-24 w-24 text-primary mx-auto mb-6" />
             <h1 className="text-4xl md:text-6xl font-bold font-headline mb-6">
               <span className="text-primary">HakiChain</span>

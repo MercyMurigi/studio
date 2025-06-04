@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -87,5 +88,32 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+  }
+  .animate-float {
+    animation: float var(--animation-duration, 6s) ease-in-out var(--animation-delay, 0s) infinite;
+  }
+
+  @keyframes subtle-rotate {
+    0% { transform: rotate(0deg); }
+    50% { transform: rotate(10deg); }
+    100% { transform: rotate(0deg); }
+  }
+  .animate-subtle-rotate {
+    animation: subtle-rotate var(--animation-duration, 8s) ease-in-out var(--animation-delay, 0s) infinite;
+  }
+
+  @keyframes pulse-opacity {
+    0%, 100% { opacity: inherit; } /* Use inherited opacity from style prop */
+    50% { opacity: calc(var(--tw-bg-opacity, var(--tw-text-opacity, 1)) * 0.2); } /* Lower opacity relative to base */
+  }
+  .animate-pulse-opacity {
+     animation: pulse-opacity var(--animation-duration, 7s) ease-in-out var(--animation-delay, 0s) infinite;
   }
 }
