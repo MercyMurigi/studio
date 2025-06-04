@@ -60,7 +60,7 @@ export const mockLawyerProfiles: LawyerProfile[] = [
   },
 ];
 
-export const mockBounties: Bounty[] = [
+export let mockBounties: Bounty[] = [
   {
     id: 'bounty-1',
     title: 'Defend Right to Protest - City Square Case',
@@ -94,14 +94,16 @@ export const mockBounties: Bounty[] = [
     ngoName: 'EcoLegal Defenders',
     amount: 7500,
     currency: 'HAKI',
-    status: 'Open',
+    status: 'In Progress',
+    lawyerId: 'lawyer-2',
+    lawyerName: 'Ben Carter',
     category: 'Environmental Law',
     createdAt: '2024-07-20T14:30:00Z',
-    updatedAt: '2024-07-20T14:30:00Z',
+    updatedAt: '2024-07-22T14:30:00Z', // Make sure updated is recent for in-progress
     deadline: '2024-10-31T14:30:00Z',
     milestones: [
-      { id: 'm2-1', name: 'Gather Evidence & Witness Statements', description: 'Collect photographic evidence, expert reports, and witness testimonies.', status: 'Pending', unlocksTokens: 1000, dueDate: '2024-08-10T14:30:00Z' },
-      { id: 'm2-2', name: 'File for Injunction', description: 'Draft and file court documents for an immediate injunction.', status: 'Pending', unlocksTokens: 2500, dueDate: '2024-08-30T14:30:00Z' },
+      { id: 'm2-1', name: 'Gather Evidence & Witness Statements', description: 'Collect photographic evidence, expert reports, and witness testimonies.', status: 'Approved', unlocksTokens: 1000, dueDate: '2024-08-10T14:30:00Z', proof: "Evidence_Bundle_1.zip", approvedAt: "2024-08-12T10:00:00Z" },
+      { id: 'm2-2', name: 'File for Injunction', description: 'Draft and file court documents for an immediate injunction.', status: 'Submitted', unlocksTokens: 2500, dueDate: '2024-08-30T14:30:00Z', proof: "Injunction_Filing_Receipt.pdf", submittedAt: "2024-08-28T10:00:00Z"},
       { id: 'm2-3', name: 'Injunction Hearing Appearance', description: 'Represent the case at the injunction hearing.', status: 'Pending', unlocksTokens: 2000, proof: undefined, dueDate: '2024-09-15T14:30:00Z'},
       { id: 'm2-4', name: 'Prepare for Full Trial (if needed)', description: 'Develop case strategy and prepare for full trial proceedings.', status: 'Pending', unlocksTokens: 2000, proof: undefined, dueDate: '2024-10-15T14:30:00Z'}
     ],
@@ -109,6 +111,10 @@ export const mockBounties: Bounty[] = [
     location: 'Green Valley Region',
     requiredExperience: '5+ years in environmental law, experience with injunctions',
     totalRaised: 7500,
+    caseFiles: [
+        {name: "Satellite_Imagery.pdf", url: "/placeholder-doc.pdf", uploadedAt: "2024-07-20T14:30:00Z"},
+        {name: "Logging_Permit_Discrepancies.docx", url: "/placeholder-doc.pdf", uploadedAt: "2024-07-20T14:35:00Z"}
+    ]
   },
    {
     id: 'bounty-3',
@@ -126,8 +132,8 @@ export const mockBounties: Bounty[] = [
     updatedAt: '2024-07-22T11:00:00Z',
     deadline: '2024-12-31T09:00:00Z',
     milestones: [
-      { id: 'm3-1', name: 'Client Consultation and Case Assessment', description: 'Detailed consultation with the family and assessment of legal options.', status: 'Approved', unlocksTokens: 1000, submittedAt: "2024-06-15T10:00:00Z", approvedAt: "2024-06-18T10:00:00Z", proof: "Client_Intake_Form.pdf" },
-      { id: 'm3-2', name: 'Drafting and Filing Custody Application', description: 'Prepare and submit all necessary court documents for the custody application.', status: 'Submitted', unlocksTokens: 2000, submittedAt: "2024-07-20T10:00:00Z", proof: "Custody_Application_Submitted.pdf" },
+      { id: 'm3-1', name: 'Client Consultation and Case Assessment', description: 'Detailed consultation with the family and assessment of legal options.', status: 'Approved', unlocksTokens: 1000, submittedAt: "2024-06-15T10:00:00Z", approvedAt: "2024-06-18T10:00:00Z", proof: "Client_Intake_Form_MR.pdf" },
+      { id: 'm3-2', name: 'Drafting and Filing Custody Application', description: 'Prepare and submit all necessary court documents for the custody application.', status: 'Submitted', unlocksTokens: 2000, submittedAt: "2024-07-20T10:00:00Z", proof: "Custody_Application_Package.zip" },
       { id: 'm3-3', name: 'Mediation Session Attendance', description: 'Represent the family in mediation sessions.', status: 'Pending', unlocksTokens: 1500, proof: undefined },
       { id: 'm3-4', name: 'Court Hearing Representation', description: 'Represent the family in all court hearings related to the custody dispute.', status: 'Pending', unlocksTokens: 1500, proof: undefined }
     ],
@@ -155,10 +161,10 @@ export const mockBounties: Bounty[] = [
     updatedAt: '2024-05-15T11:00:00Z',
     deadline: '2024-05-30T09:00:00Z',
     milestones: [
-      { id: 'm4-1', name: 'Case Review and Advice', description: 'Review documents, advise client on merits.', status: 'Approved', unlocksTokens: 800, approvedAt: "2024-03-10T10:00:00Z" },
-      { id: 'm4-2', name: 'Negotiation with Employer', description: 'Attempt to negotiate a settlement.', status: 'Approved', unlocksTokens: 1200, approvedAt: "2024-04-05T10:00:00Z" },
-      { id: 'm4-3', name: 'Prepare Tribunal Documents', description: 'Draft and file documents for employment tribunal.', status: 'Approved', unlocksTokens: 1000, approvedAt: "2024-04-25T10:00:00Z"},
-      { id: 'm4-4', name: 'Tribunal Hearing & Resolution', description: 'Represent client at hearing or finalize settlement.', status: 'Approved', unlocksTokens: 1000, approvedAt: "2024-05-15T10:00:00Z"}
+      { id: 'm4-1', name: 'Case Review and Advice', description: 'Review documents, advise client on merits.', status: 'Approved', unlocksTokens: 800, approvedAt: "2024-03-10T10:00:00Z", proof: "Case_Review_Summary_AK.pdf" },
+      { id: 'm4-2', name: 'Negotiation with Employer', description: 'Attempt to negotiate a settlement.', status: 'Approved', unlocksTokens: 1200, approvedAt: "2024-04-05T10:00:00Z", proof: "Settlement_Correspondence.pdf" },
+      { id: 'm4-3', name: 'Prepare Tribunal Documents', description: 'Draft and file documents for employment tribunal.', status: 'Approved', unlocksTokens: 1000, approvedAt: "2024-04-25T10:00:00Z", proof: "Tribunal_Bundle.pdf"},
+      { id: 'm4-4', name: 'Tribunal Hearing & Resolution', description: 'Represent client at hearing or finalize settlement.', status: 'Approved', unlocksTokens: 1000, approvedAt: "2024-05-15T10:00:00Z", proof: "Final_Order.pdf"}
     ],
     tags: ['Employment Law', 'Unfair Dismissal', 'Worker Rights'],
     location: 'Remote',
@@ -189,8 +195,8 @@ export const getAnalyticsData = (ngoId?: string): AnalyticsData => {
     : mockBounties;
 
   const totalBounties = relevantBounties.length;
-  const openBounties = relevantBounties.filter(b => b.status === 'Open').length;
-  const completedBounties = relevantBounties.filter(b => b.status === 'Completed').length;
+  const openBountiesCount = relevantBounties.filter(b => b.status === 'Open').length;
+  const completedBountiesCount = relevantBounties.filter(b => b.status === 'Completed').length;
   const totalFundsDistributed = relevantBounties
     .filter(b => b.status === 'Completed')
     .reduce((sum, b) => sum + b.amount, 0);
@@ -199,31 +205,53 @@ export const getAnalyticsData = (ngoId?: string): AnalyticsData => {
   const successRate = totalBounties > 0 ? (successfulBounties.length / totalBounties) * 100 : 0;
 
 
-  const categories = [...new Set(mockBounties.map(b => b.category))]; // Use all categories for consistency in chart config
+  const categories = [...new Set(relevantBounties.map(b => b.category))]; 
   const categoryDistribution = categories.map(cat => ({
     name: cat,
     value: relevantBounties.filter(b => b.category === cat).length,
   })).filter(cd => cd.value > 0);
 
-  // Simplified mock data for bounty status over time
-  const bountyStatusOverTime = [
-    { date: "Jan '24", open: Math.max(0, relevantBounties.filter(b => new Date(b.createdAt) < new Date("2024-02-01") && (b.status === 'Open' || new Date(b.updatedAt) >= new Date("2024-01-01"))).length - 2), completed: relevantBounties.filter(b => new Date(b.updatedAt) < new Date("2024-02-01") && b.status === 'Completed').length },
-    { date: "Feb '24", open: Math.max(0, relevantBounties.filter(b => new Date(b.createdAt) < new Date("2024-03-01") && (b.status === 'Open' || new Date(b.updatedAt) >= new Date("2024-02-01"))).length - 1), completed: relevantBounties.filter(b => new Date(b.updatedAt) < new Date("2024-03-01") && b.status === 'Completed').length },
-    { date: "Mar '24", open: Math.max(0, relevantBounties.filter(b => new Date(b.createdAt) < new Date("2024-04-01") && (b.status === 'Open' || new Date(b.updatedAt) >= new Date("2024-03-01"))).length), completed: relevantBounties.filter(b => new Date(b.updatedAt) < new Date("2024-04-01") && b.status === 'Completed' && new Date(b.updatedAt) >= new Date("2024-03-01")).length },
-    { date: "Apr '24", open: Math.max(0, relevantBounties.filter(b => new Date(b.createdAt) < new Date("2024-05-01") && (b.status === 'Open' || new Date(b.updatedAt) >= new Date("2024-04-01"))).length), completed: relevantBounties.filter(b => new Date(b.updatedAt) < new Date("2024-05-01") && b.status === 'Completed' && new Date(b.updatedAt) >= new Date("2024-04-01")).length },
-    { date: "May '24", open: Math.max(0, relevantBounties.filter(b => new Date(b.createdAt) < new Date("2024-06-01") && (b.status === 'Open' || new Date(b.updatedAt) >= new Date("2024-05-01"))).length + 1), completed: relevantBounties.filter(b => new Date(b.updatedAt) < new Date("2024-06-01") && b.status === 'Completed' && new Date(b.updatedAt) >= new Date("2024-05-01")).length },
-    { date: "Jun '24", open: openBounties, completed: completedBounties },
-  ].map(item => ({
-    ...item,
-    open: Math.max(0, item.open), // Ensure open is not negative
-    completed: Math.max(0, item.completed) // Ensure completed is not negative
+  // Simplified mock data for bounty status over time for the specific NGO
+  const monthlyData: { [key: string]: { open: number, completed: number } } = {};
+  const allMonths = ["Jan '24", "Feb '24", "Mar '24", "Apr '24", "May '24", "Jun '24"]; // Define a fixed set of months for x-axis
+
+  allMonths.forEach(monthStr => {
+    monthlyData[monthStr] = { open: 0, completed: 0 };
+  });
+  
+  const monthIndexMap: Record<string, number> = { "Jan '24":0, "Feb '24":1, "Mar '24":2, "Apr '24":3, "May '24":4, "Jun '24":5};
+
+  relevantBounties.forEach(b => {
+    const createdAtMonth = new Date(b.createdAt).toLocaleString('default', { month: 'short' }) + " '" + new Date(b.createdAt).getFullYear().toString().slice(-2);
+    const completedAtMonth = b.status === 'Completed' && b.updatedAt ? new Date(b.updatedAt).toLocaleString('default', { month: 'short' }) + " '" + new Date(b.updatedAt).getFullYear().toString().slice(-2) : null;
+
+    if (monthIndexMap[createdAtMonth] !== undefined) {
+        for (let i = monthIndexMap[createdAtMonth]; i < allMonths.length; i++) {
+            const currentMonthStr = allMonths[i];
+            if (b.status === 'Open' || (b.status === 'In Progress' && (!completedAtMonth || i < monthIndexMap[completedAtMonth]))) {
+                 if (monthlyData[currentMonthStr]) monthlyData[currentMonthStr].open++;
+            }
+        }
+    }
+    if (completedAtMonth && monthIndexMap[completedAtMonth] !== undefined) {
+         for (let i = monthIndexMap[completedAtMonth]; i < allMonths.length; i++) {
+            const currentMonthStr = allMonths[i];
+            if (monthlyData[currentMonthStr]) monthlyData[currentMonthStr].completed++;
+         }
+    }
+  });
+  
+  const bountyStatusOverTime = allMonths.map(monthStr => ({
+    date: monthStr,
+    open: monthlyData[monthStr]?.open || 0,
+    completed: monthlyData[monthStr]?.completed || 0,
   }));
 
 
   return {
     totalBounties,
-    openBounties,
-    completedBounties,
+    openBounties: openBountiesCount,
+    completedBounties: completedBountiesCount,
     totalFundsDistributed,
     averageCompletionTime: "45 days", // Static for now
     successRate,
