@@ -29,10 +29,6 @@ export default function LawyerProfilePage() {
     });
   };
 
-  const hakiBalance = lawyer.walletBalanceHaki || 0;
-  const usdEquivalent = (hakiBalance / HAKI_CONVERSION_RATE).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-
-
   return (
     <>
       <PageTitle title="My Profile" description="View and manage your professional details on HakiChain.">
@@ -61,10 +57,6 @@ export default function LawyerProfilePage() {
                             </Link>
                         </Button>
                     )}
-                    {/* Placeholder for future Chat Button if needed */}
-                    {/* <Button variant="default" className="w-full mt-2">
-                        <MessageSquare className="mr-2 h-4 w-4" /> Chat on HakiChain (Coming Soon)
-                    </Button> */}
                 </CardContent>
             </Card>
             
@@ -129,21 +121,6 @@ export default function LawyerProfilePage() {
                   </div>
                 </div>
               )}
-            </CardContent>
-          </Card>
-          
-          <Card className="shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center font-headline"><Wallet className="mr-2 h-5 w-5 text-primary" />HakiChain Wallet</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <p className="text-2xl font-bold text-primary">{hakiBalance.toLocaleString()} HAKI</p>
-                <p className="text-sm text-muted-foreground">Approx. {usdEquivalent}</p>
-                <Button variant="outline" size="sm" className="mt-3" asChild>
-                    <Link href="/lawyer/wallet"> {/* Placeholder, create /lawyer/wallet later if needed */}
-                        View Wallet Details
-                    </Link>
-                </Button>
             </CardContent>
           </Card>
         </div>
