@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -54,7 +54,12 @@ export default function SignupPage() {
     await new Promise(resolve => setTimeout(resolve, 1500));
     setIsLoading(false);
 
-    console.log("Signup data:", data); // In a real app, send this to your backend
+    console.log("Signup data:", data); 
+
+    // Store role in localStorage for login redirection
+    if (typeof window !== "undefined") {
+      localStorage.setItem("userRoleForLogin", data.role);
+    }
 
     toast({
       title: "Account Created!",
@@ -62,7 +67,7 @@ export default function SignupPage() {
       variant: "default",
     });
     form.reset();
-    router.push('/auth/login'); 
+    router.push('/auth/login');
   };
 
   return (

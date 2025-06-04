@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -19,14 +19,14 @@ import { LogIn, Loader2 } from "lucide-react";
 
 const loginFormSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
-  password: z.string().min(1, { message: "Password is required." }), 
+  password: z.string().min(1, { message: "Password is required." }),
 });
 
 type LoginFormData = z.infer<typeof loginFormSchema>;
 
 export default function LoginPage() {
   const { toast } = useToast();
-  const router = useRouter(); 
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<LoginFormData>({
@@ -43,26 +43,40 @@ export default function LoginPage() {
     await new Promise(resolve => setTimeout(resolve, 1500));
     setIsLoading(false);
 
-    console.log("Login data:", data); 
+    console.log("Login data:", data);
 
     toast({
       title: "Login Successful!",
       description: "Welcome back! Redirecting you to your dashboard...",
       variant: "default",
     });
-    
-    // Simulated role-based redirection
-    if (data.email.toLowerCase().includes("ngo@")) {
+
+    let userRole: string | null = null;
+    if (typeof window !== "undefined") {
+      userRole = localStorage.getItem("userRoleForLogin");
+      localStorage.removeItem("userRoleForLogin"); // Clear it after use
+    }
+
+    if (userRole === "ngo") {
       router.push('/ngo');
-    } else if (data.email.toLowerCase().includes("lawyer@")) {
+    } else if (userRole === "lawyer") {
       router.push('/lawyer');
-    } else if (data.email.toLowerCase().includes("donor@")) {
+    } else if (userRole === "donor") {
       router.push('/donor');
     } else {
-      // Fallback to homepage or a generic dashboard if role is not clear from email
-      router.push('/'); 
+      // Fallback if role not found in localStorage or doesn't match
+      // For safety, or if direct login, could still use email heuristic as a secondary check or just go to home
+      if (data.email.toLowerCase().includes("ngo@")) {
+        router.push('/ngo');
+      } else if (data.email.toLowerCase().includes("lawyer@")) {
+        router.push('/lawyer');
+      } else if (data.email.toLowerCase().includes("donor@")) {
+        router.push('/donor');
+      } else {
+        router.push('/');
+      }
     }
-    form.reset(); // Reset form AFTER redirection logic
+    form.reset();
   };
 
   return (
@@ -117,7 +131,7 @@ export default function LoginPage() {
               </Button>
             </p>
              <p className="mt-4 text-center text-xs text-muted-foreground">
-              (Login is simulated. Redirection is based on email content: e.g., 'ngo@...', 'lawyer@...', 'donor@...')
+              (Login is simulated. Redirection preference is based on role selected during last signup, then email content as fallback: e.g., 'ngo@...', 'lawyer@...', 'donor@...')
             </p>
           </CardContent>
         </Card>
