@@ -15,12 +15,14 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { LogIn, UserPlus, UserCircle, LogOut, Settings, LayoutDashboard } from "lucide-react"
 
-// Placeholder for authentication state
+// Placeholder for authentication state.
+// In a real application, this would be managed by an authentication system.
 const isAuthenticated = false; 
-const userName = "Advocate User";
-const userEmail = "user@hakichain.com";
+const userName = "Advocate User"; // Placeholder user name
+const userEmail = "user@hakichain.com"; // Placeholder user email
 
 export function UserNav() {
+  // If isAuthenticated is true (user is logged in), show user avatar and menu.
   if (isAuthenticated) {
     return (
       <DropdownMenu>
@@ -73,6 +75,7 @@ export function UserNav() {
     )
   }
 
+  // Otherwise (user is not logged in), show Login and Sign Up buttons.
   return (
     <div className="flex items-center space-x-2">
       <Button 
@@ -97,4 +100,3 @@ export function UserNav() {
     </div>
   )
 }
-
