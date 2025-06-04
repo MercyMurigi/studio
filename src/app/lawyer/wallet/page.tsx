@@ -7,10 +7,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
 import { mockLawyerProfiles, mockLawyerWalletTransactions, HAKI_CONVERSION_RATE } from "@/lib/data";
 import type { WalletTransaction, LawyerProfile } from "@/lib/types";
-import { Wallet as WalletIcon, ArrowDownToLine, ArrowUpFromLine, Repeat, DollarSign, Coins } from "lucide-react";
+import { Wallet as WalletIcon, ArrowDownToLine, ArrowUpFromLine, Repeat, DollarSign, Coins, ChevronDown } from "lucide-react";
 
 export default function LawyerWalletPage() {
   const { toast } = useToast();
@@ -97,13 +98,26 @@ export default function LawyerWalletPage() {
             >
               <ArrowDownToLine className="mr-2 h-5 w-5" /> Deposit
             </Button>
-            <Button 
-              onClick={() => handleActionPlaceholder("Withdraw Funds")} 
-              variant="outline" 
-              className="w-full py-6 text-lg"
-            >
-              <ArrowUpFromLine className="mr-2 h-5 w-5" /> Withdraw
-            </Button>
+            
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  className="w-full py-6 text-lg flex items-center justify-center"
+                >
+                  <ArrowUpFromLine className="mr-2 h-5 w-5" /> Withdraw <ChevronDown className="ml-2 h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-64"> {/* Adjusted width */}
+                <DropdownMenuItem disabled>
+                  Withdraw to M-Pesa (Coming Soon)
+                </DropdownMenuItem>
+                <DropdownMenuItem disabled>
+                  Connect Metamask & Withdraw (Coming Soon)
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
             <Button 
               onClick={() => handleActionPlaceholder("Swap Tokens")} 
               variant="secondary" 
@@ -161,3 +175,4 @@ export default function LawyerWalletPage() {
     </>
   );
 }
+
