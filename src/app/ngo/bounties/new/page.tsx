@@ -6,6 +6,7 @@ import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { PageTitle } from "@/components/shared/PageTitle";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,9 +18,11 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-import { PlusCircle, Trash2, CalendarIcon, DollarSign, Coins, UploadCloud, FileText, AlertTriangle } from "lucide-react";
+import { PlusCircle, Trash2, CalendarIcon, DollarSign, Coins, UploadCloud, FileText, AlertTriangle, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import type { MilestoneInput } from "@/lib/types";
+import type { Bounty, Milestone } from "@/lib/types";
+import { mockBounties, mockNgoProfiles } from "@/lib/data";
+
 
 const HAKI_PER_USD = 10; // Conversion rate for display
 
@@ -55,6 +58,7 @@ const legalCategories = [
 
 export default function CreateBountyPage() {
   const { toast } = useToast();
+  const router = useRouter();
   const [usdToConvert, setUsdToConvert] = useState<number | string>("");
   const [hakiEquivalent, setHakiEquivalent] = useState<number>(0);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
@@ -103,25 +107,66 @@ export default function CreateBountyPage() {
   };
 
   const onSubmit = async (data: CreateBountyFormData) => {
-    // In a real app, this would send data to a backend
-    const payload = {
-      ...data,
-      totalBountyHaki,
-      uploadedFileNames: uploadedFiles.map(f => f.name),
+    const currentNgo = mockNgoProfiles[0]; // Placeholder for current logged-in NGO
+    if (!currentNgo) {
+        toast({
+            title: "Error Creating Bounty",
+            description: "NGO profile not found. Please ensure you are logged in.",
+            variant: "destructive",
+        });
+        return;
+    }
+
+    const newBounty: Bounty = {
+      id: `bounty-${Date.now()}`,
+      title: data.title,
+      description: data.description,
+      ngoId: currentNgo.id,
+      ngoName: currentNgo.name,
+      amount: totalBountyHaki,
+      currency: 'HAKI',
+      status: 'Open',
+      category: data.category,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      deadline: data.overallDeadline?.toISOString(),
+      milestones: data.milestones.map((ms, index) => ({
+        id: `m-${Date.now()}-${index}`,
+        name: ms.name,
+        description: ms.description,
+        status: 'Pending',
+        unlocksTokens: Number(ms.unlocksTokens),
+        dueDate: ms.dueDate?.toISOString(),
+      })),
+      location: data.location || undefined,
+      requiredExperience: data.requiredExperience || undefined,
+      caseFiles: uploadedFiles.map(f => ({ 
+        name: f.name, 
+        // In a real app, upload the file and get a URL. For now, using a placeholder.
+        url: `/uploads/placeholder-${f.name.replace(/\s+/g, '_')}.pdf`, 
+        uploadedAt: new Date().toISOString() 
+      })),
+      tags: data.category ? [data.category] : [], // Simple tagging based on category for now
     };
-    console.log("Bounty Creation Payload:", payload);
     
+    mockBounties.unshift(newBounty); // Add to the beginning of the array for visibility
+
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1500));
 
     toast({
       title: "Bounty Created Successfully!",
-      description: `Your bounty "${data.title}" has been drafted.`,
+      description: (
+        <>
+          Your bounty <span className="font-semibold">&quot;{data.title}&quot;</span> has been posted.
+        </>
+      ),
       variant: "default",
     });
     reset();
     setUploadedFiles([]);
     setUsdToConvert("");
+    router.push("/ngo/bounties");
   };
 
   return (
@@ -255,7 +300,7 @@ export default function CreateBountyPage() {
             <div className="flex justify-between items-center">
               <div>
                 <CardTitle className="flex items-center"><DollarSign className="mr-2 h-6 w-6 text-primary" />Milestones</CardTitle>
-                <CardDescription>Define specific tasks and token rewards for each.</CardDescription>
+                <CardDescription>Define specific tasks and token rewards for each. At least one milestone is required.</CardDescription>
               </div>
               <Button type="button" variant="outline" onClick={() => append({ name: "", description: "", unlocksTokens: 0 })}>
                 <PlusCircle className="mr-2 h-4 w-4" /> Add Milestone
@@ -363,6 +408,7 @@ export default function CreateBountyPage() {
                 Reset Form
             </Button>
             <Button type="submit" className="w-full md:w-auto bg-primary hover:bg-primary/90 text-primary-foreground" disabled={isSubmitting}>
+              {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
               {isSubmitting ? "Creating Bounty..." : "Create Bounty"}
             </Button>
         </CardFooter>
@@ -371,3 +417,4 @@ export default function CreateBountyPage() {
   );
 }
 
+    

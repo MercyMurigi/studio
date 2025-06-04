@@ -1,3 +1,4 @@
+
 import type { Bounty, LawyerProfile, NgoProfile, DonorProfile, AnalyticsData, AISuggestedCase } from './types';
 
 export const mockNgoProfiles: NgoProfile[] = [
@@ -120,8 +121,8 @@ export const mockBounties: Bounty[] = [
     updatedAt: '2024-07-22T11:00:00Z',
     deadline: '2024-12-31T09:00:00Z',
     milestones: [
-      { id: 'm3-1', name: 'Client Consultation and Case Assessment', description: 'Detailed consultation with the family and assessment of legal options.', status: 'Approved', unlocksTokens: 1000, submittedAt: "2024-06-15T10:00:00Z", approvedAt: "2024-06-18T10:00:00Z" },
-      { id: 'm3-2', name: 'Drafting and Filing Custody Application', description: 'Prepare and submit all necessary court documents for the custody application.', status: 'Submitted', unlocksTokens: 2000, submittedAt: "2024-07-20T10:00:00Z" },
+      { id: 'm3-1', name: 'Client Consultation and Case Assessment', description: 'Detailed consultation with the family and assessment of legal options.', status: 'Approved', unlocksTokens: 1000, submittedAt: "2024-06-15T10:00:00Z", approvedAt: "2024-06-18T10:00:00Z", proof: "Client_Intake_Form.pdf" },
+      { id: 'm3-2', name: 'Drafting and Filing Custody Application', description: 'Prepare and submit all necessary court documents for the custody application.', status: 'Submitted', unlocksTokens: 2000, submittedAt: "2024-07-20T10:00:00Z", proof: "Custody_Application_Submitted.pdf" },
       { id: 'm3-3', name: 'Mediation Session Attendance', description: 'Represent the family in mediation sessions.', status: 'Pending', unlocksTokens: 1500, proof: undefined },
       { id: 'm3-4', name: 'Court Hearing Representation', description: 'Represent the family in all court hearings related to the custody dispute.', status: 'Pending', unlocksTokens: 1500, proof: undefined }
     ],
@@ -149,25 +150,25 @@ export const mockDonorProfiles: DonorProfile[] = [
 ];
 
 export const mockAnalyticsData: AnalyticsData = {
-  totalBounties: 25,
-  openBounties: 10,
-  completedBounties: 12,
-  totalFundsDistributed: 75000, // in HAKI
-  averageCompletionTime: "45 days",
-  successRate: 80, // percentage
+  totalBounties: mockBounties.length, // Dynamically calculate based on current bounties
+  openBounties: mockBounties.filter(b => b.status === 'Open').length,
+  completedBounties: mockBounties.filter(b => b.status === 'Completed').length,
+  totalFundsDistributed: mockBounties.filter(b => b.status === 'Completed').reduce((sum, b) => sum + b.amount, 0), // in HAKI
+  averageCompletionTime: "45 days", // This would need more complex calculation
+  successRate: mockBounties.length > 0 ? (mockBounties.filter(b => b.status === 'Completed').length / mockBounties.length) * 100 : 0, // percentage
   categoryDistribution: [
-    { name: "Human Rights", value: 10 },
-    { name: "Environmental", value: 8 },
-    { name: "Family Law", value: 5 },
-    { name: "Other", value: 2 },
+    { name: "Human Rights", value: mockBounties.filter(b => b.category === "Human Rights Law").length },
+    { name: "Environmental", value: mockBounties.filter(b => b.category === "Environmental Law").length },
+    { name: "Family Law", value: mockBounties.filter(b => b.category === "Family Law").length },
+    { name: "Other", value: mockBounties.filter(b => !["Human Rights Law", "Environmental Law", "Family Law"].includes(b.category)).length },
   ],
-  bountyStatusOverTime: [
+  bountyStatusOverTime: [ // This mock data would need to be generated dynamically in a real app
     { date: "Jan", open: 5, completed: 2 },
     { date: "Feb", open: 7, completed: 3 },
     { date: "Mar", open: 8, completed: 5 },
     { date: "Apr", open: 10, completed: 7 },
     { date: "May", open: 12, completed: 9 },
-    { date: "Jun", open: 10, completed: 12 },
+    { date: "Jun", open: mockBounties.filter(b => b.status === 'Open').length, completed: mockBounties.filter(b => b.status === 'Completed').length },
   ],
 };
 
@@ -191,3 +192,5 @@ export const mockSuggestedCases: AISuggestedCase[] = [
         currency: 'HAKI',
     }
 ];
+
+    
