@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
@@ -13,10 +14,10 @@ export default function NgoDashboardPage() {
   const totalFundsPosted = ngoBounties.reduce((sum, b) => sum + b.amount, 0);
 
   const stats = [
-    { title: "Total Bounties", value: ngoBounties.length, icon: <FileText className="h-6 w-6 text-muted-foreground" /> },
-    { title: "Open Bounties", value: openBounties, icon: <PlusCircle className="h-6 w-6 text-muted-foreground" /> },
-    { title: "Bounties In Progress", value: inProgressBounties, icon: <Users className="h-6 w-6 text-muted-foreground" /> },
-    { title: "Total Funds Posted", value: `${totalFundsPosted.toLocaleString()} HAKI`, icon: <DollarSign className="h-6 w-6 text-muted-foreground" /> },
+    { title: "Total Bounties", value: ngoBounties.length, icon: <FileText className="h-6 w-6 text-primary" /> },
+    { title: "Open Bounties", value: openBounties, icon: <PlusCircle className="h-6 w-6 text-primary" /> },
+    { title: "Bounties In Progress", value: inProgressBounties, icon: <Users className="h-6 w-6 text-primary" /> },
+    { title: "Total Funds Posted", value: `${totalFundsPosted.toLocaleString()} HAKI`, icon: <DollarSign className="h-6 w-6 text-primary" /> },
   ];
 
   return (
@@ -31,7 +32,7 @@ export default function NgoDashboardPage() {
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
         {stats.map((stat) => (
-          <Card key={stat.title}>
+          <Card key={stat.title} className="hover:shadow-lg transition-shadow duration-300">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
               {stat.icon}
