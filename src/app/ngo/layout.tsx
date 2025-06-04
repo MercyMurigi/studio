@@ -1,8 +1,11 @@
 
+"use client";
+
 import type { ReactNode } from 'react';
+import { useState, useEffect } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { LayoutDashboard, FileText, BarChart3, Settings, PlusCircle, Wallet } from 'lucide-react';
-import { mockNgoProfiles } from '@/lib/data'; // Import mock data
+// import { mockNgoProfiles } from '@/lib/data'; // We will get name from localStorage
 
 const navItems = [
   { href: '/ngo', label: 'Dashboard', icon: <LayoutDashboard className="h-5 w-5" />, matchExact: true },
@@ -14,8 +17,21 @@ const navItems = [
 ];
 
 export default function NGODashboardLayout({ children }: { children: ReactNode }) {
-  const currentNgo = mockNgoProfiles[0]; // Get the current NGO (assuming first for now)
-  const portalDisplayName = currentNgo ? `${currentNgo.name} Portal` : "NGO Portal";
+  const [portalDisplayName, setPortalDisplayName] = useState("NGO Portal");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedNgoName = localStorage.getItem("currentNgoSessionName");
+      if (storedNgoName) {
+        setPortalDisplayName(`${storedNgoName} Portal`);
+      } else {
+        // Fallback if no specific NGO name is in session,
+        // could also try to get from mockNgoProfiles if an ID was stored.
+        // For now, simple fallback.
+        setPortalDisplayName("NGO Portal");
+      }
+    }
+  }, []);
 
   return (
     <DashboardLayout navItems={navItems} portalName={portalDisplayName}>
@@ -23,4 +39,3 @@ export default function NGODashboardLayout({ children }: { children: ReactNode }
     </DashboardLayout>
   );
 }
-

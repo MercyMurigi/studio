@@ -86,9 +86,17 @@ export default function SignupPage() {
 
     console.log("Signup data:", data);
 
-    // Store role in localStorage for login redirection
+    // Store role and NGO specific details in localStorage for login redirection
     if (typeof window !== "undefined") {
       localStorage.setItem("userRoleForLogin", data.role);
+      if (data.role === "ngo" && data.ngoName && data.email) {
+        localStorage.setItem("signupNgoName", data.ngoName);
+        localStorage.setItem("signupNgoEmail", data.email); // Using email as a pseudo-ID for the NGO
+      } else {
+        // Clear any previous NGO signup details if role is not NGO
+        localStorage.removeItem("signupNgoName");
+        localStorage.removeItem("signupNgoEmail");
+      }
     }
 
     const displayName = data.role === 'ngo' ? data.representativeName : data.fullName;

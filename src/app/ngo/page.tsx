@@ -1,14 +1,51 @@
 
+"use client";
+
+import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import { PageTitle } from "@/components/shared/PageTitle";
 import { mockBounties, mockNgoProfiles } from "@/lib/data";
+import type { NgoProfile } from '@/lib/types';
 import { PlusCircle, BarChart3, FileText, DollarSign, Users, UserCheck, CheckCircle, Gift, ArrowRight } from "lucide-react";
 
 export default function NgoDashboardPage() {
-  const ngo = mockNgoProfiles[0]; // Assuming current NGO is the first one
-  const ngoBounties = mockBounties.filter(b => b.ngoId === ngo.id);
+  const [currentNgo, setCurrentNgo] = useState<NgoProfile | null>(null);
+  const [ngoDisplayName, setNgoDisplayName] = useState("Your Organization");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedNgoName = localStorage.getItem("currentNgoSessionName");
+      const storedNgoEmail = localStorage.getItem("currentNgoSessionEmail");
+      
+      if (storedNgoName) {
+        setNgoDisplayName(storedNgoName);
+      }
+
+      // Try to find the full NGO profile from mock data if email is available
+      // In a real app, you'd fetch this based on a stored ID or session.
+      if (storedNgoEmail) {
+        const foundNgo = mockNgoProfiles.find(p => p.email === storedNgoEmail);
+        if (foundNgo) {
+          setCurrentNgo(foundNgo);
+          if (!storedNgoName) setNgoDisplayName(foundNgo.name); // Use profile name if session name wasn't set
+        } else if (storedNgoName) {
+          // If profile not in mock, but name was in session, create a temporary profile
+          setCurrentNgo({ id: 'temp-ngo', name: storedNgoName, email: storedNgoEmail, description: '', walletBalanceHaki:0 });
+        }
+      }
+      
+      if (!currentNgo && !storedNgoEmail && !storedNgoName) {
+        // Fallback to the first mock NGO if no session data at all
+        setCurrentNgo(mockNgoProfiles[0]);
+        setNgoDisplayName(mockNgoProfiles[0].name);
+      }
+    }
+  }, []);
+
+
+  const ngoBounties = currentNgo ? mockBounties.filter(b => b.ngoId === currentNgo.id) : [];
   const openBounties = ngoBounties.filter(b => b.status === 'Open').length;
   const inProgressBounties = ngoBounties.filter(b => b.status === 'In Progress').length;
   const totalFundsPosted = ngoBounties.reduce((sum, b) => sum + b.amount, 0);
@@ -26,7 +63,7 @@ export default function NgoDashboardPage() {
       icon: <UserCheck className="h-5 w-5 text-primary flex-shrink-0" />,
       description: "Aisha Khan applied for 'Defend Right to Protest'.",
       time: "2 hours ago",
-      link: "#" // Placeholder link
+      link: "#" 
     },
     {
       id: 'act-2',
@@ -46,7 +83,7 @@ export default function NgoDashboardPage() {
 
   return (
     <>
-      <PageTitle title={`Welcome, ${ngo.name}!`} description="Here's an overview of your activities on HakiChain.">
+      <PageTitle title={`Welcome, ${ngoDisplayName}!`} description="Here's an overview of your activities on HakiChain.">
         <Button asChild>
           <Link href="/ngo/bounties/new">
             <PlusCircle className="mr-2 h-4 w-4" /> Create New Bounty
