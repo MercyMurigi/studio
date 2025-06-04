@@ -53,7 +53,7 @@ export default function BrowseCasesPage() {
     setFilteredBounties(tempBounties);
   }, [searchTerm, categoryFilter, locationFilter, allBounties]);
 
-  const uniqueCategories = ["all", ...new Set(mockBounties.map(b => b.category)).add("Employment Law")]; // ensure all mock categories are available
+  const uniqueCategories = ["all", ...new Set(mockBounties.map(b => b.category)).add("Employment Law").add("Housing Law").add("Intellectual Property Law")];
   const uniqueLocations = ["all", ...new Set(mockBounties.map(b => b.location).filter(Boolean) as string[])];
 
   const handleViewAndApplyClick = (bounty: Bounty) => {

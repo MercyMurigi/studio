@@ -91,7 +91,7 @@ export let mockBounties: Bounty[] = [
       { id: 'm1-4', name: 'Challenge Legality of Arrest', description: 'File motion challenging arrest legality.', status: 'Pending', unlocksTokens: 1500, proof: undefined, dueDate: '2024-09-15T10:00:00Z'}
     ],
     tags: ['Protest Rights', 'Civil Liberties', 'Freedom of Assembly'],
-    location: 'Capital City',
+    location: 'Nairobi CBD',
     requiredExperience: '3+ years in human rights litigation',
     totalRaised: 5500,
     caseFiles: [{name: "Initial Police Report.pdf", url: "/placeholder-doc.pdf", uploadedAt: "2024-07-15T10:00:00Z"}],
@@ -121,7 +121,7 @@ export let mockBounties: Bounty[] = [
       { id: 'm2-4', name: 'Prepare for Full Trial (if needed)', description: 'Develop case strategy and prepare for full trial proceedings.', status: 'Pending', unlocksTokens: 2000, proof: undefined, dueDate: '2024-10-15T14:30:00Z'}
     ],
     tags: ['Deforestation', 'Conservation', 'Environmental Litigation'],
-    location: 'Green Valley Region',
+    location: 'Mau Forest Complex',
     requiredExperience: '5+ years in environmental law, experience with injunctions',
     totalRaised: 7500,
     caseFiles: [
@@ -151,7 +151,7 @@ export let mockBounties: Bounty[] = [
       { id: 'm3-4', name: 'Court Hearing Representation', description: 'Represent the family in all court hearings related to the custody dispute.', status: 'Pending', unlocksTokens: 1500, proof: undefined }
     ],
     tags: ['Child Custody', 'Refugee Rights', 'International Family Law'],
-    location: 'Capital City',
+    location: 'Nairobi (Eastleigh)',
     requiredExperience: 'Specialization in family law, experience with refugee cases preferred',
     totalRaised: 7000, 
     donorContributions: [
@@ -181,7 +181,7 @@ export let mockBounties: Bounty[] = [
       { id: 'm4-4', name: 'Tribunal Hearing & Resolution', description: 'Represent client at hearing or finalize settlement.', status: 'Approved', unlocksTokens: 1000, approvedAt: "2024-05-15T10:00:00Z", proof: "Final_Order.pdf"}
     ],
     tags: ['Employment Law', 'Unfair Dismissal', 'Worker Rights'],
-    location: 'Remote',
+    location: 'Mombasa',
     requiredExperience: 'Experience in employment law and tribunal advocacy',
     totalRaised: 4000,
   },
@@ -206,9 +206,30 @@ export let mockBounties: Bounty[] = [
       { id: 'm5-3', name: 'Court Representation (if needed)', description: 'Represent tenant in eviction hearing.', status: 'Pending', unlocksTokens: 1500 }
     ],
     tags: ['Eviction', 'Tenant Rights', 'Housing Security'],
-    location: 'Urban Area',
+    location: 'Kisumu City',
     requiredExperience: '2+ years in housing or tenant law',
     caseFiles: [{ name: "Eviction_Notice.pdf", url: "/placeholder-doc.pdf", uploadedAt: "2024-07-25T10:05:00Z" }]
+  },
+  {
+    id: 'bounty-6',
+    title: 'Intellectual Property Advice for Startup',
+    description: 'Provide legal advice to a new tech startup on protecting their intellectual property, including trademark and copyright guidance.',
+    ngoId: 'ngo-1',
+    ngoName: 'Justice First Initiative',
+    amount: 2500,
+    currency: 'HAKI',
+    status: 'Open',
+    category: 'Intellectual Property Law',
+    createdAt: '2024-07-28T12:00:00Z',
+    updatedAt: '2024-07-28T12:00:00Z',
+    deadline: '2024-09-30T12:00:00Z',
+    milestones: [
+      { id: 'm6-1', name: 'Initial IP Audit and Consultation', description: 'Review startup assets and provide initial IP consultation.', status: 'Pending', unlocksTokens: 1000 },
+      { id: 'm6-2', name: 'Drafting IP Protection Strategy Document', description: 'Create a document outlining recommended IP protection steps.', status: 'Pending', unlocksTokens: 1500 }
+    ],
+    tags: ['Intellectual Property', 'Startups', 'Copyright', 'Trademark'],
+    location: 'Remote',
+    requiredExperience: 'Experience with IP law for tech companies',
   }
 ];
 
@@ -464,4 +485,5 @@ export const mockLawyerWalletTransactions: WalletTransaction[] = [
 
 // Alias for clarity, as mockWalletTransactions was more NGO-centric before
 export const mockWalletTransactions = mockNgoWalletTransactions;
+
 
