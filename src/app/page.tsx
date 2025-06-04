@@ -106,27 +106,6 @@ export default function HomePage() {
             </div>
           </div>
         </section>
-
-        {/* Call to Action Section */}
-        <section className="py-16 md:py-24 bg-primary/10">
-          <div className="container mx-auto px-4 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold font-headline mb-6">Ready to Join?</h2>
-            <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-10">
-              Help us build a more just world. Register or learn more.
-            </p>
-            <div className="space-x-0 md:space-x-4 space-y-4 md:space-y-0 flex flex-col md:flex-row justify-center items-center">
-              <Button size="lg" asChild className="w-full md:w-auto">
-                <Link href="/auth/signup?role=ngo">Register as NGO</Link>
-              </Button>
-              <Button size="lg" variant="secondary" asChild className="w-full md:w-auto">
-                <Link href="/auth/signup?role=lawyer">Join as Lawyer</Link>
-              </Button>
-              <Button size="lg" variant="outline" asChild className="w-full md:w-auto">
-                <Link href="/donor">Support as Donor</Link>
-              </Button>
-            </div>
-          </div>
-        </section>
       </main>
       <Footer />
     </div>
