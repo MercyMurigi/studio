@@ -50,8 +50,7 @@ export default function LoginPage() {
       description: "Welcome back! Redirecting you to your dashboard...",
       variant: "default",
     });
-    form.reset();
-
+    
     // Simulated role-based redirection
     if (data.email.toLowerCase().includes("ngo@")) {
       router.push('/ngo');
@@ -63,6 +62,7 @@ export default function LoginPage() {
       // Fallback to homepage or a generic dashboard if role is not clear from email
       router.push('/'); 
     }
+    form.reset(); // Reset form AFTER redirection logic
   };
 
   return (
