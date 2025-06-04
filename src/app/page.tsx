@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { Gavel, ShieldCheck, ClipboardCheck, Network } from "lucide-react";
+import { Scale, ShieldCheck, ClipboardCheck, Network } from "lucide-react";
 
 export default function HomePage() {
   const features = [
@@ -33,9 +33,9 @@ export default function HomePage() {
         {/* Hero Section */}
         <section className="py-20 md:py-32 bg-gradient-to-br from-background to-primary/10">
           <div className="container mx-auto px-4 text-center">
-            <Gavel className="h-24 w-24 text-primary mx-auto mb-6" />
+            <Scale className="h-24 w-24 text-primary mx-auto mb-6" />
             <h1 className="text-4xl md:text-6xl font-bold font-headline mb-6">
-              <span className="text-primary">HakiChain Advocate</span>
+              <span className="text-primary">HakiChain</span>
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
               Incentivizing pro-bono legal work with AI-powered matching and transparent bounties.
@@ -58,7 +58,7 @@ export default function HomePage() {
               <div>
                 <h2 className="text-3xl md:text-4xl font-bold font-headline mb-6">Justice, Connected.</h2>
                 <p className="text-muted-foreground mb-4">
-                  HakiChain Advocate connects NGOs, lawyers, and donors for impactful pro-bono work.
+                  HakiChain connects NGOs, lawyers, and donors for impactful pro-bono work.
                 </p>
                 <p className="text-muted-foreground mb-6">
                   We use technology to create a transparent, efficient, and rewarding system for expanding access to justice.

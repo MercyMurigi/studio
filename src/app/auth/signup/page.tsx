@@ -25,7 +25,7 @@ export default function SignupPage() {
           <CardHeader className="text-center">
             <UserPlus className="mx-auto h-12 w-12 text-primary mb-4" />
             <CardTitle className="text-3xl font-headline">Create an Account</CardTitle>
-            <CardDescription>Join HakiChain Advocate to make a difference.</CardDescription>
+            <CardDescription>Join HakiChain to make a difference.</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">

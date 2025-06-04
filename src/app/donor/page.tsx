@@ -59,7 +59,7 @@ export default function DonorPortalPage() {
         <div className="text-center py-12">
           <Image src="https://placehold.co/300x200.png?text=No+Open+Bounties" alt="No open bounties" width={300} height={200} className="mx-auto mb-4 rounded" data-ai-hint="empty state illustration" />
           <p className="text-xl text-muted-foreground">There are currently no open bounties seeking funding.</p>
-          <p className="text-muted-foreground">Please check back later or consider supporting HakiChain Advocate directly.</p>
+          <p className="text-muted-foreground">Please check back later or consider supporting HakiChain directly.</p>
           <Button className="mt-6" asChild>
             <Link href="/">Learn More About Our Mission</Link>
           </Button>

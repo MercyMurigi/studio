@@ -5,7 +5,7 @@ import AppProviders from '@/components/AppProviders';
 
 
 export const metadata: Metadata = {
-  title: 'HakiChain Advocate',
+  title: 'HakiChain',
   description: 'Incentivizing pro-bono legal work through transparent bounties and AI-powered matching.',
 };
 

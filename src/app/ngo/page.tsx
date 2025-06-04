@@ -21,7 +21,7 @@ export default function NgoDashboardPage() {
 
   return (
     <>
-      <PageTitle title={`Welcome, ${ngo.name}!`} description="Here's an overview of your activities on HakiChain Advocate.">
+      <PageTitle title={`Welcome, ${ngo.name}!`} description="Here's an overview of your activities on HakiChain.">
         <Button asChild>
           <Link href="/ngo/bounties/new">
             <PlusCircle className="mr-2 h-4 w-4" /> Create New Bounty
