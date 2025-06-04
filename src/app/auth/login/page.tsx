@@ -51,26 +51,38 @@ export default function LoginPage() {
       variant: "default",
     });
 
-    let userRoleFromStorage: string | null = null;
+    let redirected = false;
     if (typeof window !== "undefined") {
-      userRoleFromStorage = localStorage.getItem("userRoleForLogin");
-      if (userRoleFromStorage) { // Only remove if it was actually found and read
-        localStorage.removeItem("userRoleForLogin");
+      const loginRedirectTarget = localStorage.getItem("loginRedirectTarget");
+      if (loginRedirectTarget === "donor") {
+        router.push('/donor');
+        localStorage.removeItem("loginRedirectTarget");
+        redirected = true;
+      }
+
+      if (!redirected) {
+        const userRoleFromStorage = localStorage.getItem("userRoleForLogin");
+        if (userRoleFromStorage) {
+          localStorage.removeItem("userRoleForLogin"); // Clear it after reading
+          if (userRoleFromStorage === "ngo") {
+            router.push('/ngo');
+            redirected = true;
+          } else if (userRoleFromStorage === "lawyer") {
+            router.push('/lawyer');
+            redirected = true;
+          } else if (userRoleFromStorage === "donor") {
+            router.push('/donor'); 
+            redirected = true;
+          }
+        }
       }
     }
 
-    if (userRoleFromStorage === "ngo") {
-      router.push('/ngo');
-    } else if (userRoleFromStorage === "lawyer") {
-      router.push('/lawyer');
-    } else if (userRoleFromStorage === "donor") {
-      router.push('/donor');
-    } else {
-      // If role from signup isn't found in localStorage, redirect to homepage
-      console.log("Role not found in localStorage or unrecognized, redirecting to home.");
+    if (!redirected) {
+      console.log("No specific role or redirect target found in localStorage, redirecting to home.");
       router.push('/');
     }
-    form.reset();
+    form.reset(); // Reset form after all redirection logic
   };
 
   return (
@@ -125,7 +137,7 @@ export default function LoginPage() {
               </Button>
             </p>
              <p className="mt-4 text-center text-xs text-muted-foreground">
-              (Login is simulated. Redirection is based on the role selected during your last signup. If not found, you'll be taken to the homepage.)
+              (Login is simulated. Redirection prioritizes if you came from a donor page, then the role selected during your last signup. If neither is found, you'll be taken to the homepage.)
             </p>
           </CardContent>
         </Card>
@@ -134,3 +146,4 @@ export default function LoginPage() {
     </div>
   );
 }
+

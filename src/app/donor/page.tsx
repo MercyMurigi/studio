@@ -9,14 +9,15 @@ import { mockBounties, mockDonorProfiles } from "@/lib/data";
 import Image from "next/image";
 import { HeartHandshake, Users, Briefcase, DollarSign, Award, Medal, Shield, HelpingHand, User, LogIn } from "lucide-react";
 import type { DonorProfile } from "@/lib/types";
-import { useToast } from "@/hooks/use-toast"; // Import useToast
-import { useState } from "react"; // Import useState for conceptual mode
+import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
+import { useRouter } from "next/navigation"; // Import useRouter
 
 export default function DonorPortalPage() {
-  const { toast } = useToast(); // Initialize toast
-  const [contributionMode, setContributionMode] = useState<'initial' | 'guest' | 'loggedIn'>('initial'); // Conceptual state
+  const { toast } = useToast();
+  const router = useRouter(); // Initialize useRouter
+  const [contributionMode, setContributionMode] = useState<'initial' | 'guest' | 'loggedIn'>('initial');
 
-  // Simulate a logged-in donor context. In a real app, this would come from auth.
   const currentDonor: DonorProfile | undefined = contributionMode === 'loggedIn' ? mockDonorProfiles[0] : undefined; 
   const openBounties = mockBounties.filter(b => b.status === 'Open' || b.status === 'In Progress');
 
@@ -28,6 +29,13 @@ export default function DonorPortalPage() {
     });
   };
 
+  const handleLoginClick = () => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("loginRedirectTarget", "donor");
+    }
+    router.push('/auth/login');
+  };
+
   return (
     <>
       <PageTitle 
@@ -35,8 +43,7 @@ export default function DonorPortalPage() {
         description="Browse active bounties and contribute to causes you care about. Your support helps lawyers provide essential legal services."
       />
 
-      {/* New "Choose Your Path" Section */}
-      {contributionMode === 'initial' && ( // Only show if choice hasn't been made
+      {contributionMode === 'initial' && (
         <Card className="mb-12 shadow-lg border-t-4 border-primary">
           <CardHeader>
             <CardTitle className="text-2xl font-headline text-center">Welcome, Supporter!</CardTitle>
@@ -52,17 +59,17 @@ export default function DonorPortalPage() {
             >
               <User className="mr-2 h-5 w-5" /> Continue as Guest
             </Button>
-            <Button asChild className="w-full md:w-auto text-lg py-6 bg-primary hover:bg-primary/90">
-              <Link href="/auth/login">
-                <LogIn className="mr-2 h-5 w-5" /> Login / Sign Up
-              </Link>
+            <Button 
+              className="w-full md:w-auto text-lg py-6 bg-primary hover:bg-primary/90"
+              onClick={handleLoginClick} // Use onClick handler
+            >
+              <LogIn className="mr-2 h-5 w-5" /> Login / Sign Up
             </Button>
           </CardContent>
         </Card>
       )}
 
 
-      {/* Existing Impact Dashboard - only shown if a choice other than 'initial' is made */}
       {contributionMode !== 'initial' && currentDonor && (
         <section className="mb-12">
           <h2 className="text-2xl font-semibold font-headline mb-4">Your Impact Dashboard</h2>
@@ -116,14 +123,17 @@ export default function DonorPortalPage() {
         </section>
       )}
       
-      {/* Message for guests if they chose to continue as guest */}
       {contributionMode === 'guest' && !currentDonor && (
         <Card className="mb-12 shadow-md bg-blue-50 border-blue-200">
           <CardContent className="p-6 text-center">
             <p className="text-blue-700">
               You are contributing as a guest. 
               <Button variant="link" asChild className="p-1 text-blue-700 hover:text-blue-800">
-                <Link href="/auth/login">Log in</Link>
+                <Link href="/auth/login" onClick={() => {
+                  if (typeof window !== "undefined") {
+                    localStorage.setItem("loginRedirectTarget", "donor");
+                  }
+                }}>Log in</Link>
               </Button> 
               to track your impact and earn badges.
             </p>
@@ -132,7 +142,6 @@ export default function DonorPortalPage() {
       )}
 
 
-      {/* Fund a Cause section - only shown if a choice other than 'initial' is made */}
       {contributionMode !== 'initial' && (
         <>
           <h2 className="text-2xl font-semibold font-headline mb-6 mt-8 border-t pt-8">Fund a Cause</h2>
@@ -162,7 +171,6 @@ export default function DonorPortalPage() {
                       <span className="text-sm text-green-500 ml-2">(Goal: {bounty.totalRaised.toLocaleString()} {bounty.currency})</span>
                     )}
                   </div>
-                  {/* Placeholder for progress bar if needed, e.g. funded amount vs goal */}
                 </CardContent>
                 <CardFooter className="border-t pt-4">
                   <Button className="w-full bg-primary hover:bg-primary/80 text-lg py-3" asChild>
@@ -190,3 +198,4 @@ export default function DonorPortalPage() {
     </>
   );
 }
+

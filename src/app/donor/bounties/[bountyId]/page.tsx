@@ -30,9 +30,9 @@ export default function FundBountyPage() {
   const [donationAmountUsd, setDonationAmountUsd] = useState<string>("");
   const [mpesaPhone, setMpesaPhone] = useState<string>("");
   const [cryptoAmount, setCryptoAmount] = useState<string>("");
-  const [selectedCrypto, setSelectedCrypto] = useState<string>("USDC"); // Default crypto
+  const [selectedCrypto, setSelectedCrypto] = useState<string>("USDC"); 
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
-  const [contributionMode, setContributionMode] = useState<'guest' | 'loggedIn'>('guest'); // conceptual
+  const [contributionMode, setContributionMode] = useState<'guest' | 'loggedIn'>('guest'); 
 
   useEffect(() => {
     const foundBounty = mockBounties.find(b => b.id === bountyId);
@@ -76,7 +76,6 @@ export default function FundBountyPage() {
     }
 
     setIsProcessingPayment(true);
-    // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 2000));
     setIsProcessingPayment(false);
 
@@ -97,7 +96,13 @@ export default function FundBountyPage() {
       title: "Contributing as Guest",
       description: "Your contribution will be anonymous. You can log in to track impact and earn badges.",
     });
-    // In a real app, you might set a flag or proceed. Here, it just confirms the mode.
+  };
+
+  const handleLoginClick = () => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("loginRedirectTarget", "donor");
+    }
+    router.push('/auth/login');
   };
 
 
@@ -134,7 +139,6 @@ export default function FundBountyPage() {
       </PageTitle>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Column: Bounty Details */}
         <div className="lg:col-span-2 space-y-6">
           <Card className="shadow-lg">
             <CardHeader>
@@ -185,7 +189,6 @@ export default function FundBountyPage() {
           </Card>
         </div>
 
-        {/* Right Column: Funding Card */}
         <div className="lg:col-span-1 space-y-6">
           <Card className="shadow-xl sticky top-24">
             <CardHeader>
@@ -193,8 +196,7 @@ export default function FundBountyPage() {
               <CardDescription>Your contribution makes a real difference.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* Anonymous/Login Choice Section - This section will be visible if not logged in conceptually */}
-              {contributionMode === 'guest' && ( // Conceptually, this condition would be based on actual auth state
+              {contributionMode === 'guest' && (
                 <div className="pb-4 border-b">
                   <h3 className="text-md font-semibold mb-1 text-center">Contribute Your Way</h3>
                   <p className="text-xs text-muted-foreground mb-3 text-center">
@@ -209,15 +211,16 @@ export default function FundBountyPage() {
                     >
                       <User className="mr-2 h-4 w-4" /> Continue as Guest
                     </Button>
-                    <Button asChild className="flex-1 bg-primary hover:bg-primary/90" disabled={isProcessingPayment}>
-                      <Link href="/auth/login">
+                    <Button 
+                        className="flex-1 bg-primary hover:bg-primary/90" 
+                        onClick={handleLoginClick}
+                        disabled={isProcessingPayment}
+                    >
                         <LogIn className="mr-2 h-4 w-4" /> Login / Sign Up
-                      </Link>
                     </Button>
                   </div>
                 </div>
               )}
-              {/* End Anonymous/Login Choice Section */}
             
               <div>
                 <Label className="font-semibold">Funding Goal</Label>
