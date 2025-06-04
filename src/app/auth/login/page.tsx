@@ -53,11 +53,15 @@ export default function LoginPage() {
 
     let redirected = false;
     if (typeof window !== "undefined") {
+      // Clear all potentially conflicting session names first
+      localStorage.removeItem("currentNgoSessionName");
+      localStorage.removeItem("currentNgoSessionEmail");
+      localStorage.removeItem("currentLawyerSessionName");
+      localStorage.removeItem("currentLawyerSessionEmail");
+
       // Priority 1: Donor specific redirect
       const loginRedirectTarget = localStorage.getItem("loginRedirectTarget");
       if (loginRedirectTarget === "donor") {
-        localStorage.setItem("currentNgoSessionName", ""); // Clear any NGO session if coming as donor
-        localStorage.setItem("currentNgoSessionEmail", "");
         router.push('/donor');
         localStorage.removeItem("loginRedirectTarget");
         redirected = true;
@@ -68,6 +72,8 @@ export default function LoginPage() {
         const userRoleFromStorage = localStorage.getItem("userRoleForLogin");
         const signupNgoName = localStorage.getItem("signupNgoName");
         const signupNgoEmail = localStorage.getItem("signupNgoEmail");
+        const signupLawyerName = localStorage.getItem("signupLawyerName");
+        const signupLawyerEmail = localStorage.getItem("signupLawyerEmail");
 
         if (userRoleFromStorage) {
           if (userRoleFromStorage === "ngo" && signupNgoName && signupNgoEmail === data.email) {
@@ -75,14 +81,12 @@ export default function LoginPage() {
             localStorage.setItem("currentNgoSessionEmail", signupNgoEmail);
             router.push('/ngo');
             redirected = true;
-          } else if (userRoleFromStorage === "lawyer") {
-            localStorage.setItem("currentNgoSessionName", ""); 
-            localStorage.setItem("currentNgoSessionEmail", "");
+          } else if (userRoleFromStorage === "lawyer" && signupLawyerName && signupLawyerEmail === data.email) {
+            localStorage.setItem("currentLawyerSessionName", signupLawyerName);
+            localStorage.setItem("currentLawyerSessionEmail", signupLawyerEmail);
             router.push('/lawyer');
             redirected = true;
-          } else if (userRoleFromStorage === "donor") { // If role was donor during signup, but no specific donor page redirect
-             localStorage.setItem("currentNgoSessionName", "");
-             localStorage.setItem("currentNgoSessionEmail", "");
+          } else if (userRoleFromStorage === "donor") {
             router.push('/donor'); 
             redirected = true;
           }
@@ -90,14 +94,14 @@ export default function LoginPage() {
           localStorage.removeItem("userRoleForLogin");
           localStorage.removeItem("signupNgoName");
           localStorage.removeItem("signupNgoEmail");
+          localStorage.removeItem("signupLawyerName");
+          localStorage.removeItem("signupLawyerEmail");
         }
       }
     }
 
     if (!redirected) {
       console.log("No specific role or redirect target found in localStorage, redirecting to home.");
-      localStorage.setItem("currentNgoSessionName", ""); // Clear any NGO session
-      localStorage.setItem("currentNgoSessionEmail", "");
       router.push('/');
     }
     form.reset(); 
@@ -155,7 +159,7 @@ export default function LoginPage() {
               </Button>
             </p>
              <p className="mt-4 text-center text-xs text-muted-foreground">
-              (Login is simulated. Redirection prioritizes if you came from a donor page, then the role selected during your last signup. If neither applies, you&apos;ll go to the homepage.)
+              (Login is simulated. Redirection prioritizes if you came from a donor page, then the role (and corresponding name/email) selected during your last signup. If neither applies, you&apos;ll go to the homepage.)
             </p>
           </CardContent>
         </Card>

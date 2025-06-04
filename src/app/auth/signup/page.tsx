@@ -86,16 +86,23 @@ export default function SignupPage() {
 
     console.log("Signup data:", data);
 
-    // Store role and NGO specific details in localStorage for login redirection
     if (typeof window !== "undefined") {
       localStorage.setItem("userRoleForLogin", data.role);
       if (data.role === "ngo" && data.ngoName && data.email) {
         localStorage.setItem("signupNgoName", data.ngoName);
-        localStorage.setItem("signupNgoEmail", data.email); // Using email as a pseudo-ID for the NGO
+        localStorage.setItem("signupNgoEmail", data.email);
+        localStorage.removeItem("signupLawyerName"); // Clear other role specific details
+        localStorage.removeItem("signupLawyerEmail");
+      } else if (data.role === "lawyer" && data.fullName && data.email) {
+        localStorage.setItem("signupLawyerName", data.fullName);
+        localStorage.setItem("signupLawyerEmail", data.email);
+        localStorage.removeItem("signupNgoName"); // Clear other role specific details
+        localStorage.removeItem("signupNgoEmail");
       } else {
-        // Clear any previous NGO signup details if role is not NGO
         localStorage.removeItem("signupNgoName");
         localStorage.removeItem("signupNgoEmail");
+        localStorage.removeItem("signupLawyerName");
+        localStorage.removeItem("signupLawyerEmail");
       }
     }
 

@@ -1,14 +1,50 @@
 
+"use client";
+
+import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import Link from "next/link";
 import { PageTitle } from "@/components/shared/PageTitle";
 import { mockLawyerProfiles, mockBounties, mockSuggestedCases } from "@/lib/data";
+import type { LawyerProfile } from '@/lib/types';
 import { Search, Briefcase, Bot, CheckCircle, ArrowRight } from "lucide-react";
 
 export default function LawyerDashboardPage() {
-  const lawyer = mockLawyerProfiles[0]; // Assuming current lawyer
-  const claimedBounties = mockBounties.filter(b => b.lawyerId === lawyer.id);
+  const [currentLawyer, setCurrentLawyer] = useState<LawyerProfile | null>(null);
+  const [lawyerDisplayName, setLawyerDisplayName] = useState("Advocate");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedLawyerName = localStorage.getItem("currentLawyerSessionName");
+      const storedLawyerEmail = localStorage.getItem("currentLawyerSessionEmail");
+      
+      if (storedLawyerName) {
+        setLawyerDisplayName(storedLawyerName);
+      }
+
+      if (storedLawyerEmail) {
+        const foundLawyer = mockLawyerProfiles.find(p => p.email === storedLawyerEmail);
+        if (foundLawyer) {
+          setCurrentLawyer(foundLawyer);
+          if (!storedLawyerName) setLawyerDisplayName(foundLawyer.name);
+        } else if (storedLawyerName) {
+          // If profile not in mock, but name was in session, create a temporary profile
+          setCurrentLawyer({ id: 'temp-lawyer', name: storedLawyerName, email: storedLawyerEmail, specialization: [], experienceYears: 0, bio: '' });
+        }
+      }
+      
+      if (!currentLawyer && !storedLawyerEmail && !storedLawyerName) {
+        // Fallback to the first mock lawyer if no session data at all
+        const defaultLawyer = mockLawyerProfiles[0];
+        setCurrentLawyer(defaultLawyer);
+        setLawyerDisplayName(defaultLawyer.name);
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // currentLawyer dependency removed to avoid re-triggering from its own update
+
+  const claimedBounties = currentLawyer ? mockBounties.filter(b => b.lawyerId === currentLawyer.id) : [];
   const completedMilestones = claimedBounties.reduce((acc, bounty) => 
     acc + bounty.milestones.filter(m => m.status === 'Approved').length, 0
   );
@@ -22,7 +58,7 @@ export default function LawyerDashboardPage() {
 
   return (
     <>
-      <PageTitle title={`Welcome back, ${lawyer.name}!`} description="Manage your pro-bono work and find new opportunities.">
+      <PageTitle title={`Welcome back, ${lawyerDisplayName}!`} description="Manage your pro-bono work and find new opportunities.">
         <Button asChild>
           <Link href="/lawyer/cases">
             <Search className="mr-2 h-4 w-4" /> Browse Available Cases
