@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import Link from "next/link";
@@ -13,9 +14,9 @@ export default function LawyerDashboardPage() {
   );
 
   const stats = [
-    { title: "Claimed Cases", value: claimedBounties.length, icon: <Briefcase className="h-6 w-6 text-muted-foreground" />, link: "/lawyer/my-cases" },
-    { title: "Completed Milestones", value: completedMilestones, icon: <CheckCircle className="h-6 w-6 text-muted-foreground" />, link: "/lawyer/my-cases" },
-    { title: "Suggested Cases", value: mockSuggestedCases.length, icon: <Bot className="h-6 w-6 text-muted-foreground" />, link: "/lawyer/match" },
+    { title: "Claimed Cases", value: claimedBounties.length, icon: <Briefcase className="h-6 w-6 text-secondary" />, link: "/lawyer/my-cases" },
+    { title: "Completed Milestones", value: completedMilestones, icon: <CheckCircle className="h-6 w-6 text-secondary" />, link: "/lawyer/my-cases" },
+    { title: "Suggested Cases", value: mockSuggestedCases.length, icon: <Bot className="h-6 w-6 text-secondary" />, link: "/lawyer/match" },
   ];
 
   return (
@@ -30,7 +31,7 @@ export default function LawyerDashboardPage() {
 
       <div className="grid gap-6 md:grid-cols-3 mb-8">
         {stats.map((stat) => (
-          <Card key={stat.title} className="hover:shadow-lg transition-shadow">
+          <Card key={stat.title} className="hover:shadow-lg transition-shadow border-l-4 border-secondary">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
               {stat.icon}
