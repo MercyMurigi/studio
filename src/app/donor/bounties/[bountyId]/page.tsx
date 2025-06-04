@@ -32,7 +32,7 @@ export default function FundBountyPage() {
   const [cryptoAmount, setCryptoAmount] = useState<string>("");
   const [selectedCrypto, setSelectedCrypto] = useState<string>("USDC"); 
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
-  const [contributionMode, setContributionMode] = useState<'guest' | 'loggedIn'>('guest'); 
+  // Removed contributionMode state
 
   useEffect(() => {
     const foundBounty = mockBounties.find(b => b.id === bountyId);
@@ -81,7 +81,7 @@ export default function FundBountyPage() {
 
     toast({
       title: "Donation Submitted!",
-      description: `Thank you for your generous ${contributionMode === 'guest' ? 'anonymous ' : ''}donation of ${donationAmountHaki} HAKI via ${method} to "${bounty?.title}". Your contribution is being processed.`,
+      description: `Thank you for your generous donation of ${donationAmountHaki} HAKI via ${method} to "${bounty?.title}". Your contribution is being processed.`,
       variant: "default",
     });
     setDonationAmountHaki("");
@@ -90,14 +90,6 @@ export default function FundBountyPage() {
     setCryptoAmount("");
   };
   
-  const handleContinueAsGuest = () => {
-    setContributionMode('guest');
-    toast({
-      title: "Contributing as Guest",
-      description: "Your contribution will be anonymous. You can log in to track impact and earn badges.",
-    });
-  };
-
   const handleLoginClick = () => {
     if (typeof window !== "undefined") {
       localStorage.setItem("loginRedirectTarget", "donor");
@@ -196,31 +188,7 @@ export default function FundBountyPage() {
               <CardDescription>Your contribution makes a real difference.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              {contributionMode === 'guest' && (
-                <div className="pb-4 border-b">
-                  <h3 className="text-md font-semibold mb-1 text-center">Contribute Your Way</h3>
-                  <p className="text-xs text-muted-foreground mb-3 text-center">
-                    You&apos;re contributing as a guest. Log in to track impact and earn badges.
-                  </p>
-                  <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
-                    <Button 
-                      variant="outline" 
-                      className="flex-1" 
-                      onClick={handleContinueAsGuest}
-                      disabled={isProcessingPayment}
-                    >
-                      <User className="mr-2 h-4 w-4" /> Continue as Guest
-                    </Button>
-                    <Button 
-                        className="flex-1 bg-primary hover:bg-primary/90" 
-                        onClick={handleLoginClick}
-                        disabled={isProcessingPayment}
-                    >
-                        <LogIn className="mr-2 h-4 w-4" /> Login / Sign Up
-                    </Button>
-                  </div>
-                </div>
-              )}
+              {/* Removed the "Contribute Your Way" section */}
             
               <div>
                 <Label className="font-semibold">Funding Goal</Label>
@@ -255,6 +223,13 @@ export default function FundBountyPage() {
                   />
                 </div>
                 <p className="text-xs text-muted-foreground">1 USD = {HAKI_CONVERSION_RATE} HAKI (approx.)</p>
+                 <p className="text-xs text-muted-foreground">
+                  Want to track your impact?{' '}
+                  <Button variant="link" className="p-0 h-auto text-xs text-primary" onClick={handleLoginClick} disabled={isProcessingPayment}>
+                    Log in or Sign up
+                  </Button>
+                  .
+                </p>
               </div>
 
               <Tabs defaultValue="mpesa" className="w-full">
@@ -321,6 +296,4 @@ export default function FundBountyPage() {
     </div>
   );
 }
-    
-
     

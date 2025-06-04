@@ -10,26 +10,18 @@ import Image from "next/image";
 import { HeartHandshake, Users, Briefcase, DollarSign, Award, Medal, Shield, HelpingHand, User, LogIn } from "lucide-react";
 import type { DonorProfile } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
-import { useRouter } from "next/navigation"; // Import useRouter
+import { useRouter } from "next/navigation"; 
 
 export default function DonorPortalPage() {
   const { toast } = useToast();
-  const router = useRouter(); // Initialize useRouter
-  const [contributionMode, setContributionMode] = useState<'initial' | 'guest' | 'loggedIn'>('initial');
+  const router = useRouter();
 
-  const currentDonor: DonorProfile | undefined = contributionMode === 'loggedIn' ? mockDonorProfiles[0] : undefined; 
+  // Simulate fetching a logged-in donor. In a real app, this would come from auth state.
+  // If mockDonorProfiles[0] is undefined, it simulates a guest.
+  const currentDonor: DonorProfile | undefined = mockDonorProfiles[0]; 
   const openBounties = mockBounties.filter(b => b.status === 'Open' || b.status === 'In Progress');
 
-  const handleContinueAsGuest = () => {
-    setContributionMode('guest');
-    toast({
-      title: "Contributing as Guest",
-      description: "You can now browse and fund cases anonymously.",
-    });
-  };
-
-  const handleLoginClick = () => {
+  const handleLoginRedirect = () => {
     if (typeof window !== "undefined") {
       localStorage.setItem("loginRedirectTarget", "donor");
     }
@@ -43,34 +35,7 @@ export default function DonorPortalPage() {
         description="Browse active bounties and contribute to causes you care about. Your support helps lawyers provide essential legal services."
       />
 
-      {contributionMode === 'initial' && (
-        <Card className="mb-12 shadow-lg border-t-4 border-primary">
-          <CardHeader>
-            <CardTitle className="text-2xl font-headline text-center">Welcome, Supporter!</CardTitle>
-            <CardDescription className="text-center text-md">
-              Choose how you&apos;d like to proceed. Log in to track your impact and earn badges for your contributions.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col items-center space-y-4 md:flex-row md:justify-center md:space-y-0 md:space-x-4">
-            <Button 
-              variant="outline" 
-              className="w-full md:w-auto text-lg py-6" 
-              onClick={handleContinueAsGuest}
-            >
-              <User className="mr-2 h-5 w-5" /> Continue as Guest
-            </Button>
-            <Button 
-              className="w-full md:w-auto text-lg py-6 bg-primary hover:bg-primary/90"
-              onClick={handleLoginClick} // Use onClick handler
-            >
-              <LogIn className="mr-2 h-5 w-5" /> Login / Sign Up
-            </Button>
-          </CardContent>
-        </Card>
-      )}
-
-
-      {contributionMode !== 'initial' && currentDonor && (
+      {currentDonor && (
         <section className="mb-12">
           <h2 className="text-2xl font-semibold font-headline mb-4">Your Impact Dashboard</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -123,17 +88,13 @@ export default function DonorPortalPage() {
         </section>
       )}
       
-      {contributionMode === 'guest' && !currentDonor && (
-        <Card className="mb-12 shadow-md bg-blue-50 border-blue-200">
+      {!currentDonor && (
+        <Card className="mb-12 shadow-md bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-700">
           <CardContent className="p-6 text-center">
-            <p className="text-blue-700">
-              You are contributing as a guest. 
-              <Button variant="link" asChild className="p-1 text-blue-700 hover:text-blue-800">
-                <Link href="/auth/login" onClick={() => {
-                  if (typeof window !== "undefined") {
-                    localStorage.setItem("loginRedirectTarget", "donor");
-                  }
-                }}>Log in</Link>
+            <p className="text-blue-700 dark:text-blue-300">
+              You are browsing as a guest. 
+              <Button variant="link" onClick={handleLoginRedirect} className="p-1 text-blue-700 dark:text-blue-300 hover:text-blue-800 dark:hover:text-blue-200">
+                Log in or Sign up
               </Button> 
               to track your impact and earn badges.
             </p>
@@ -141,61 +102,55 @@ export default function DonorPortalPage() {
         </Card>
       )}
 
-
-      {contributionMode !== 'initial' && (
-        <>
-          <h2 className="text-2xl font-semibold font-headline mb-6 mt-8 border-t pt-8">Fund a Cause</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {openBounties.map(bounty => (
-              <Card key={bounty.id} className="flex flex-col hover:shadow-xl transition-shadow duration-300 ease-in-out">
-                <CardHeader>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs px-2 py-1 rounded-full bg-secondary text-secondary-foreground">{bounty.category}</span>
-                    <span className="text-xs text-muted-foreground">{new Date(bounty.createdAt).toLocaleDateString()}</span>
-                  </div>
-                  <CardTitle className="font-headline text-xl h-14 overflow-hidden">{bounty.title}</CardTitle>
-                  <CardDescription className="h-16 overflow-hidden text-ellipsis">{bounty.description.substring(0, 100)}...</CardDescription>
-                </CardHeader>
-                <CardContent className="flex-grow">
-                  <div className="flex items-center text-sm text-muted-foreground mb-1">
-                    <Shield className="h-4 w-4 mr-2" /> NGO: {bounty.ngoName}
-                  </div>
-                  {bounty.lawyerName && (
-                    <div className="flex items-center text-sm text-muted-foreground mb-1">
-                      <Briefcase className="h-4 w-4 mr-2" /> Lawyer: {bounty.lawyerName}
-                    </div>
-                  )}
-                  <div className="flex items-center text-lg font-semibold text-primary mt-2">
-                    <DollarSign className="h-5 w-5 mr-1" /> {bounty.amount.toLocaleString()} {bounty.currency}
-                    {bounty.totalRaised && bounty.totalRaised > bounty.amount && (
-                      <span className="text-sm text-green-500 ml-2">(Goal: {bounty.totalRaised.toLocaleString()} {bounty.currency})</span>
-                    )}
-                  </div>
-                </CardContent>
-                <CardFooter className="border-t pt-4">
-                  <Button className="w-full bg-primary hover:bg-primary/80 text-lg py-3" asChild>
-                    <Link href={`/donor/bounties/${bounty.id}`}> 
-                      <HeartHandshake className="mr-2 h-5 w-5" /> Fund This Case
-                    </Link>
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
-
-          {openBounties.length === 0 && (
-            <div className="text-center py-12">
-              <Image src="https://placehold.co/300x200.png" alt="No open bounties" width={300} height={200} className="mx-auto mb-4 rounded" data-ai-hint="empty illustration" />
-              <p className="text-xl text-muted-foreground">There are currently no open bounties seeking funding.</p>
-              <p className="text-muted-foreground">Please check back later or consider supporting HakiChain directly.</p>
-              <Button className="mt-6" asChild>
-                <Link href="/">Learn More About Our Mission</Link>
+      <h2 className="text-2xl font-semibold font-headline mb-6 mt-8 border-t pt-8">Fund a Cause</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {openBounties.map(bounty => (
+          <Card key={bounty.id} className="flex flex-col hover:shadow-xl transition-shadow duration-300 ease-in-out">
+            <CardHeader>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs px-2 py-1 rounded-full bg-secondary text-secondary-foreground">{bounty.category}</span>
+                <span className="text-xs text-muted-foreground">{new Date(bounty.createdAt).toLocaleDateString()}</span>
+              </div>
+              <CardTitle className="font-headline text-xl h-14 overflow-hidden">{bounty.title}</CardTitle>
+              <CardDescription className="h-16 overflow-hidden text-ellipsis">{bounty.description.substring(0, 100)}...</CardDescription>
+            </CardHeader>
+            <CardContent className="flex-grow">
+              <div className="flex items-center text-sm text-muted-foreground mb-1">
+                <Shield className="h-4 w-4 mr-2" /> NGO: {bounty.ngoName}
+              </div>
+              {bounty.lawyerName && (
+                <div className="flex items-center text-sm text-muted-foreground mb-1">
+                  <Briefcase className="h-4 w-4 mr-2" /> Lawyer: {bounty.lawyerName}
+                </div>
+              )}
+              <div className="flex items-center text-lg font-semibold text-primary mt-2">
+                <DollarSign className="h-5 w-5 mr-1" /> {bounty.amount.toLocaleString()} {bounty.currency}
+                {bounty.totalRaised && bounty.totalRaised > bounty.amount && (
+                  <span className="text-sm text-green-500 ml-2">(Goal: {bounty.totalRaised.toLocaleString()} {bounty.currency})</span>
+                )}
+              </div>
+            </CardContent>
+            <CardFooter className="border-t pt-4">
+              <Button className="w-full bg-primary hover:bg-primary/80 text-lg py-3" asChild>
+                <Link href={`/donor/bounties/${bounty.id}`}> 
+                  <HeartHandshake className="mr-2 h-5 w-5" /> Fund This Case
+                </Link>
               </Button>
-            </div>
-          )}
-        </>
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
+
+      {openBounties.length === 0 && (
+        <div className="text-center py-12">
+          <Image src="https://placehold.co/300x200.png" alt="No open bounties" width={300} height={200} className="mx-auto mb-4 rounded" data-ai-hint="empty illustration" />
+          <p className="text-xl text-muted-foreground">There are currently no open bounties seeking funding.</p>
+          <p className="text-muted-foreground">Please check back later or consider supporting HakiChain directly.</p>
+          <Button className="mt-6" asChild>
+            <Link href="/">Learn More About Our Mission</Link>
+          </Button>
+        </div>
       )}
     </>
   );
 }
-
