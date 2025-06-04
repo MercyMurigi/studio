@@ -1,5 +1,5 @@
 
-import type { Bounty, LawyerProfile, NgoProfile, DonorProfile, AnalyticsData, AISuggestedCase } from './types';
+import type { Bounty, LawyerProfile, NgoProfile, DonorProfile, AnalyticsData, AISuggestedCase, WalletTransaction } from './types';
 
 export const mockNgoProfiles: NgoProfile[] = [
   {
@@ -10,6 +10,7 @@ export const mockNgoProfiles: NgoProfile[] = [
     website: 'https://justicefirst.org',
     focusAreas: ['Human Rights', 'Civil Liberties'],
     logoUrl: 'https://placehold.co/100x100.png?text=JFI',
+    walletBalanceHaki: 75000,
   },
   {
     id: 'ngo-2',
@@ -19,6 +20,7 @@ export const mockNgoProfiles: NgoProfile[] = [
     website: 'https://ecolegal.org',
     focusAreas: ['Environmental Law', 'Climate Justice'],
     logoUrl: 'https://placehold.co/100x100.png?text=ELD',
+    walletBalanceHaki: 120000,
   },
 ];
 
@@ -32,6 +34,7 @@ export const mockLawyerProfiles: LawyerProfile[] = [
     bio: 'Passionate human rights lawyer with extensive experience in international courts.',
     profilePictureUrl: 'https://placehold.co/100x100.png?text=AK',
     availability: 'Part-time',
+    walletBalanceHaki: 15000,
   },
   {
     id: 'lawyer-2',
@@ -42,6 +45,7 @@ export const mockLawyerProfiles: LawyerProfile[] = [
     bio: 'Environmental lawyer focused on holding corporations accountable for ecological damage.',
     profilePictureUrl: 'https://placehold.co/100x100.png?text=BC',
     availability: 'Flexible',
+    walletBalanceHaki: 500,
   },
   {
     id: 'lawyer-3',
@@ -52,6 +56,7 @@ export const mockLawyerProfiles: LawyerProfile[] = [
     bio: 'Experienced family lawyer dedicated to protecting the rights of children and vulnerable families.',
     profilePictureUrl: 'https://placehold.co/100x100.png?text=MR',
     availability: 'Full-time',
+    walletBalanceHaki: 22000,
   },
 ];
 
@@ -166,12 +171,14 @@ export const mockDonorProfiles: DonorProfile[] = [
   {
     id: 'donor-1',
     name: 'Anonymous Philanthropist',
+    walletBalanceHaki: 500000,
   },
   {
     id: 'donor-2',
     name: 'Community Support Fund',
     email: 'csf@support.org',
     profilePictureUrl: 'https://placehold.co/100x100.png?text=CSF',
+    walletBalanceHaki: 1000000,
   },
 ];
 
@@ -192,22 +199,25 @@ export const getAnalyticsData = (ngoId?: string): AnalyticsData => {
   const successRate = totalBounties > 0 ? (successfulBounties.length / totalBounties) * 100 : 0;
 
 
-  const categories = [...new Set(relevantBounties.map(b => b.category))];
+  const categories = [...new Set(mockBounties.map(b => b.category))]; // Use all categories for consistency in chart config
   const categoryDistribution = categories.map(cat => ({
     name: cat,
     value: relevantBounties.filter(b => b.category === cat).length,
-  })).filter(cd => cd.value > 0); // Ensure no zero-value categories if NGO has none in a global category
+  })).filter(cd => cd.value > 0);
 
   // Simplified mock data for bounty status over time
-  // In a real app, this would come from historical data related to the specific NGO
   const bountyStatusOverTime = [
-    { date: "Jan '24", open: ngoId ? Math.floor(Math.random() * 3) + 1 : 5, completed: ngoId ? Math.floor(Math.random() * 2) : 2 },
-    { date: "Feb '24", open: ngoId ? Math.floor(Math.random() * 4) + 1 : 7, completed: ngoId ? Math.floor(Math.random() * 2) + 1 : 3 },
-    { date: "Mar '24", open: ngoId ? Math.floor(Math.random() * 5) + 2 : 8, completed: ngoId ? Math.floor(Math.random() * 3) + 1 : 5 },
-    { date: "Apr '24", open: ngoId ? Math.floor(Math.random() * 6) + 2 : 10, completed: ngoId ? Math.floor(Math.random() * 4) + 2 : 7 },
-    { date: "May '24", open: ngoId ? Math.floor(Math.random() * 5) + 3 : 12, completed: ngoId ? Math.floor(Math.random() * 4) + 3 : 9 },
-    { date: "Jun '24", open: openBounties, completed: completedBounties},
-  ];
+    { date: "Jan '24", open: Math.max(0, relevantBounties.filter(b => new Date(b.createdAt) < new Date("2024-02-01") && (b.status === 'Open' || new Date(b.updatedAt) >= new Date("2024-01-01"))).length - 2), completed: relevantBounties.filter(b => new Date(b.updatedAt) < new Date("2024-02-01") && b.status === 'Completed').length },
+    { date: "Feb '24", open: Math.max(0, relevantBounties.filter(b => new Date(b.createdAt) < new Date("2024-03-01") && (b.status === 'Open' || new Date(b.updatedAt) >= new Date("2024-02-01"))).length - 1), completed: relevantBounties.filter(b => new Date(b.updatedAt) < new Date("2024-03-01") && b.status === 'Completed').length },
+    { date: "Mar '24", open: Math.max(0, relevantBounties.filter(b => new Date(b.createdAt) < new Date("2024-04-01") && (b.status === 'Open' || new Date(b.updatedAt) >= new Date("2024-03-01"))).length), completed: relevantBounties.filter(b => new Date(b.updatedAt) < new Date("2024-04-01") && b.status === 'Completed' && new Date(b.updatedAt) >= new Date("2024-03-01")).length },
+    { date: "Apr '24", open: Math.max(0, relevantBounties.filter(b => new Date(b.createdAt) < new Date("2024-05-01") && (b.status === 'Open' || new Date(b.updatedAt) >= new Date("2024-04-01"))).length), completed: relevantBounties.filter(b => new Date(b.updatedAt) < new Date("2024-05-01") && b.status === 'Completed' && new Date(b.updatedAt) >= new Date("2024-04-01")).length },
+    { date: "May '24", open: Math.max(0, relevantBounties.filter(b => new Date(b.createdAt) < new Date("2024-06-01") && (b.status === 'Open' || new Date(b.updatedAt) >= new Date("2024-05-01"))).length + 1), completed: relevantBounties.filter(b => new Date(b.updatedAt) < new Date("2024-06-01") && b.status === 'Completed' && new Date(b.updatedAt) >= new Date("2024-05-01")).length },
+    { date: "Jun '24", open: openBounties, completed: completedBounties },
+  ].map(item => ({
+    ...item,
+    open: Math.max(0, item.open), // Ensure open is not negative
+    completed: Math.max(0, item.completed) // Ensure completed is not negative
+  }));
 
 
   return {
@@ -215,7 +225,7 @@ export const getAnalyticsData = (ngoId?: string): AnalyticsData => {
     openBounties,
     completedBounties,
     totalFundsDistributed,
-    averageCompletionTime: "45 days", // Static for now, could be calculated from relevantBounties
+    averageCompletionTime: "45 days", // Static for now
     successRate,
     categoryDistribution,
     bountyStatusOverTime,
@@ -238,8 +248,64 @@ export const mockSuggestedCases: AISuggestedCase[] = [
         caseName: 'Indigenous Land Rights Claim',
         caseDescription: 'Legal support needed for an indigenous community to file a land rights claim against encroachment by a large agricultural firm.',
         matchReason: 'Your background in Human Rights Law and reported interest in indigenous rights makes this a strong potential match.',
-        ngoName: 'Global Rights Watch', // Different NGO for variety
+        ngoName: 'Global Rights Watch', 
         bountyAmount: 8000,
         currency: 'HAKI',
     }
+];
+
+export const HAKI_CONVERSION_RATE = 10; // 1 USD = 10 HAKI
+
+export const mockWalletTransactions: WalletTransaction[] = [
+  {
+    id: 'txn-1',
+    date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days ago
+    type: 'Bounty Funded',
+    description: 'Funded "Defend Right to Protest - City Square Case"',
+    amountHaki: -5000,
+    status: 'Completed',
+    relatedBountyId: 'bounty-1',
+    to: 'Escrow: bounty-1',
+    currency: 'HAKI',
+  },
+  {
+    id: 'txn-2',
+    date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), // 5 days ago
+    type: 'Deposit',
+    description: 'Deposit from Bank Transfer XXXX-1234',
+    amountHaki: 20000,
+    status: 'Completed',
+    from: 'Bank Account XXXX-1234',
+    currency: 'USD', // Original currency of deposit
+  },
+  {
+    id: 'txn-3',
+    date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days ago
+    type: 'Bounty Funded',
+    description: 'Funded "Stop Illegal Deforestation - Green Valley Project"',
+    amountHaki: -7500,
+    status: 'Completed',
+    relatedBountyId: 'bounty-2',
+    to: 'Escrow: bounty-2',
+    currency: 'HAKI',
+  },
+  {
+    id: 'txn-4',
+    date: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(), // 10 days ago
+    type: 'Initial Allocation',
+    description: 'Initial HAKI token allocation for platform onboarding',
+    amountHaki: 50000,
+    status: 'Completed',
+    currency: 'HAKI',
+  },
+  {
+    id: 'txn-5',
+    date: new Date().toISOString(), // Today
+    type: 'Withdrawal',
+    description: 'Withdrawal to Bank Account YYYY-5678',
+    amountHaki: -1000,
+    status: 'Pending',
+    to: 'Bank Account YYYY-5678',
+    currency: 'HAKI',
+  },
 ];

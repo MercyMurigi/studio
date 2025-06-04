@@ -57,6 +57,7 @@ export interface LawyerProfile {
   profilePictureUrl?: string;
   availability?: 'Full-time' | 'Part-time' | 'Flexible';
   preferredCaseTypes?: string[];
+  walletBalanceHaki?: number;
 }
 
 export interface NgoProfile {
@@ -68,6 +69,7 @@ export interface NgoProfile {
   registrationNumber?: string;
   focusAreas?: string[]; // e.g., ["Human Rights", "Environmental Protection"]
   logoUrl?: string;
+  walletBalanceHaki?: number;
 }
 
 export interface DonorProfile {
@@ -75,6 +77,7 @@ export interface DonorProfile {
   name: string; // Can be "Anonymous"
   email?: string; // Optional for anonymous
   profilePictureUrl?: string;
+  walletBalanceHaki?: number;
 }
 
 // For AI Matching Input (Lawyer Side)
@@ -126,4 +129,18 @@ export interface MilestoneInput {
   unlocksTokens: number;
   usdEquivalent?: number; // For display purposes
   dueDate?: Date | undefined;
+}
+
+export interface WalletTransaction {
+  id: string;
+  date: string; // ISO string date
+  type: 'Deposit' | 'Withdrawal' | 'Bounty Funded' | 'Milestone Payout' | 'Fee' | 'Swap In' | 'Swap Out' | 'Initial Allocation';
+  description: string;
+  amountHaki: number; // Positive for credit, negative for debit
+  status: 'Completed' | 'Pending' | 'Failed';
+  relatedBountyId?: string;
+  from?: string;
+  to?: string;
+  currency?: 'HAKI' | 'USD'; // For swaps or deposits/withdrawals
+  transactionHash?: string; // For blockchain transactions later
 }
